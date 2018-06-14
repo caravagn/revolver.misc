@@ -1,0 +1,275 @@
+---
+title: "Plotting functions in REVOLVER"
+author: "Giulio Caravagna"
+institute: "Institute for Cancer Research"
+date: "June 10, 2018"
+email: "giulio.caravagna@ed.ac.uk"
+output:
+  github_document:
+    toc: true
+    toc_depth: 2
+#output:
+#  prettydoc::html_pretty:
+#    theme: cayman
+#    highlight: github
+---
+
+
+All the examples refer to the breast cancer cohort, available in the package release.
+
+
+```{r, echo = TRUE, warning=FALSE}
+# Load REVOLVER and disable crayon's coloured output that renders badly in HTML,
+# as well as REVOLVER's progress bars...
+library(revolver)
+
+options(crayon.enabled = FALSE)
+options(revolver.progressBar = FALSE)
+
+data("Breast.fit") # Yates et al.
+Breast.fit
+```
+There are three types of plotting functions in REVOLVER:
+
+* functions  ``revolver_report_xxx`` where ``xxx`` is one of ``patient``, ``fit`` or ``clusters``. These functions use  ``revolver_plt_xxx`` plots to render a PDF report about a patient, fits and REVOLVER's clusters. 
+
+* functions ``revolver_plt_xxx`` where ``xxx`` identifies the plot. These functions plot to the graphic device, but often accept a parameter ``file`` to save the plot to PDF (in that case, the device is created with  ``pdf``); 
+
+* ``plot`` functions for S3 objects that combine some of the above function; see the bottom of this document.
+
+## PDF reports
+
+> To assemble PDFs, REVOLVER relies on [PDFjam](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/firth/software/pdfjam/) and other scripts like ``pdfScale.sh``. Scripts are included in REVOLVER's package, but PDFjam no; please, check that you have it installed in your system (PDFjam is available for all Unix-like systems, and should be compatible with Windows via Cygwin).
+
+
+Print to file !["REVOLVER-report-patient-data-models-PD9770.pdf"](./REVOLVER-report-patient-data-models-PD9770.pdf) a PDF report with data, trees and their rank for patient ``PD9770``
+```{r, results='hide'}
+revolver_report_patient(Breast.fit, 'PD9770', cex = 1.5)
+```
+ 
+Print to file !["REVOLVER-report-fit-patient-PD9770.pdf"](./REVOLVER-report-fit-patient-PD9770.pdf) a PDF report with fit, evolutionary trajectories (exploded) and information transfer for patient ``PD9770``
+
+```{r, results='hide'}
+revolver_report_fit_patient(Breast.fit, 'PD9770', cex = 3)
+```
+
+
+<!-- ```{r, eval = FALSE} -->
+<!-- revolver_report_clusters(Breast.fit, cex = 1.5) -->
+<!-- ``` -->
+
+
+**Assembling your own PDFs.** You can assemble a bunch of PDFs via function ``jamPDF``. 
+
+```{r, eval = FALSE}
+# Take file "1.pdf", "2.pdf", merge them to a unique PDF with layout "2x1"
+jamPDF(
+  in.files = c("1.pdf", "2.pdf"),
+  out.file = 'newfile.pdf',
+  layout = '2x1',                 # the layout (matrix style)
+  delete.original = TRUE          # delete original files
+  crop.white = TRUE,              # crop white borders for overly large PDF canvases
+  page = 'a4'                     # resize each page to fit A4 paper
+)                 
+```
+
+
+## Plotting functions
+
+### Data and trees for a patient
+
+**Plotting a REVOLVER tree.** The top-ranked tree for patient ``PD14753``, among all the ones available is
+
+```{r, fig.width=5, fig.height=5}
+tree = Breast.fit$phylogenies$PD14753[[1]]
+
+revolver_plt_tree(x = tree, type = 'binary')
+```
+
+``type = 'binary'`` tells which data we are using, and defines how to compute "Violations" via ``stats.rev_phylo``: for ``binary``  the field reported is ``$Suppes``, a violation is when the inequality holds as ``<``. For  ``CCF``, the field reported is ``$CCF.pigeonhole`` and violations are due to the pigeonhole principle.
+```{r}
+stats.rev_phylo(tree)
+```
+
+In this graphics colours encode information about the trajectories described by this tree. In particular, the colour of the edge determines the paths: i.e., here because 11 is below 3, the edge is coloured orange. Observe that nodes/ groups 4, 7, 8 and 9 have no driver annotated and are in light gray.
+
+**Plotting data for a patient.** You can plot a ``pheatmap`` of the input data, annotated with driver and clonality status. In that plot each row is a group of alterations that occur in the same set of samples (with binary data), or a group of alterations associated to the same cluster/ clone (with CCF data). Every group may have or not drivers associated; columns represent samples (regions, for instance). 
+
+```{r, results='hide'}
+revolver_plt_patient_data(Breast.fit, patient = 'PD14753')
+```
+
+**Plotting all the trees of a patient (the distribution).** We  plot the score of the trees for a patient with a barplot (sorted). Each bar is a tree, and is coloured according to its information transfer; repeated colours mean that more than one tree transfer the same orderings among the drivers. The more colours then, the more combinations of transfers are available. 
+
+
+```{r,  fig.width=6, fig.height=3, results='hide'}
+# Here we have 8trees with 3 different information transfers
+revolver_plt_patient_trees_scores(Breast.fit, patient = 'PD14768')
+```
+
+We can visualize the top ``K`` trees for a patient by iteratively applying tree plotting functions, as wrapped via ``revolver_plt_patient_trees``. The number of plots is limited above by ``K``, and the number of trees available for the patient. 
+
+```{r, fig.width=15, fig.height=15, results='hide'}
+# Inspect the information transfer (observe the different ordering of the tree nodes).
+revolver_plt_patient_trees(Breast.fit, patient = 'PD14768', max.phylogenies = 12, file = NA, cex = 1)
+```
+
+So, ``PD14768`` has some combinations of transfer repeated because group 2 has no drivers, and thus all the models that predict a branch towards 3 and 4, leads to the same trasnfer. 
+
+### Visualizing fits
+
+
+**Plotting a patient's fit, its trajectories and the information transfer.** The fit of a patient is accessible via a direct function, which wraps a call to ``revolver_plt_tree`` 
+```{r, fig.width=5, fig.height=5}
+ revolver_plt_fit_patient(Breast.fit, patient = 'PD9850')
+```
+
+From the model fit, REVOLVER  compute the expansion of all the nodes of the tree with at least  one  drivers associated, which leads us to the evolutionary trajectories of the model
+
+```{r, fig.width=6, fig.height=7}
+revolver_plt_trajectories_patient(Breast.fit, patient = 'PD9850')
+```
+
+At the same time, we can extract the information transfer from  the model fit, and annotate some basic information on the plots
+
+```{r, fig.width=6, fig.height=7}
+revolver_plt_itransfer_patient(Breast.fit, patient = 'PD9850')
+```
+
+
+
+
+**Plotting w, the penalty of the fit.** The penalty-per-patient is shown with a simple barplot computed by marginalizing **w** over the alterations 
+```{r, fig.width=3, fig.height=6}
+revolver_plt_penalty_barplot(Breast.fit)
+```
+
+While the penalty across patients and alterations is shown with a ``pheatmap``. This can be plot for the models fit at the end of the TL fit (likelihood fit + expansion step), by default, or  you can use ``type="before.expansion"`` to use the models computed after likelihood fit (without the expansion). If you prefer, you can  plot the normalized version of  **w** with ``normalized = TRUE``.
+
+```{r, fig.width=9, fig.height=9}
+revolver_plt_penalty_matrix(Breast.fit)
+```
+
+**Plotting the index of Divergent Evolutionary Trajectories (DET).** The DET for the  cohort  is estimated via a non-parametric bootstrap with ``N`` resamples, and visualized in a histogram.
+
+```{r, fig.width=4, fig.height=4}
+revolver_plt_DET_index(Breast.fit, N = 100)
+```
+
+For each driver, it is reported as estimated empirically from data
+
+```{r, fig.width=3, fig.height=6}
+revolver_plt_DET_index_driver(Breast.fit)
+```
+
+  <!-- revolver_penaltyPlot(fit) -->
+  <!-- plot(fit, out.file = paste(cohort.name, '.fit.pdf', sep = ''), plot.stat = TRUE, layout = '1x1',  palette = 'Dark2') -->
+  
+  
+  
+  
+
+### Visualizing clusters
+
+**Plotting features from REVOLVER clustering.** You can visualize REVOLVER clusters and trajectories (features) to spot relevant trajectories in each group.
+
+```{r, fig.width=20, fig.height=20}
+revolver_plt_rclusters(Breast.fit, cutoff.features_annotation = 3, cex = 1)
+```
+
+**Plotting dendograms for REVOLVER and occurence-based clusters.** You can plot dendrograms that show REVOLVER clusters, or clusters given by the patterns of occurence of the annotated drivers (binary, or clonal/ subclonal), coloured with REVOLVER clustering assignemnt.
+
+
+```{r}
+revolver_plt_dendogram(Breast.fit, type = 'REVOLVER')
+```
+
+
+```{r, fig.width=12, fig.height=3}
+par(mfrow = c(1,2))
+revolver_plt_dendogram(Breast.fit, type = 'binary')
+revolver_plt_dendogram(Breast.fit, type = 'clonality')
+par(mfrow = c(1,1))
+```
+
+**Bannerplot for REVOLVER clusters.**
+```{r, fig.width=5, fig.height=5}
+revolver_plt_rbannerplot(Breast.fit, cex = 1)
+```
+
+**Tanglegrams to compare REVOLVER and occurence-based clusters.**  Tanglegrams against clusters obtained by 
+patterns of occurrences of the input alterations highlight how groups of patients change when you use REVOLVEr.
+```{r}
+revolver_plt_compare_dendograms(Breast.fit, cex = 1, type = 'binary')
+```
+Use ``type = 'clonality'`` to compare against clonal/ subclonal patterns.
+
+
+**Plotting REVOLVER's evolutionary distance.** 
+You can display the  distance that has been used to compute the clusters, for each pair of patients.
+
+```{r}
+revolver_plt_evodistance(Breast.fit, cex = 1)
+```
+
+
+**Plotting the models trajectories present in each of REVOLVER's groups.** It might be convenient to plot the fit of each model by clustering group. You can use a function for this, which will also plot a table for the most frequent trajectories. 
+
+```{r, fig.width=15, fig.height=15, eval = FALSE}
+revolver_plt_fit_by_group(Breast.fit, cex = 1, file.suffix = "REVOLVER-Clusters-FitsPerCluster.pdf")
+```
+
+The output of this functions is a set of PDFs, named as the group, and followed by the string ``file.suffix``, which you can change to organize your PDFs as you prefer. We do not show execution of this function here.
+
+
+
+### Visualizing confidence (jackknife)
+
+**Plotting co-clustering statistics.** With all entries above 0.7 annotated, the patient-x-patient matrix is plot as
+
+```{r, fig.width=9, fig.height=9}
+revolver_plt_jackknife_coclust(Breast.fit, cutoff.annotate.numbers = 0.7)
+```
+
+The boxplot per cluster is instead plot with this function
+```{r, fig.width=6, fig.height=3}
+revolver_plt_jackknife_coclust_bplot(Breast.fit)
+```
+
+**Plotting edge statistics.** The probability of detecting each edge across resamples is an alteration-x-alteration matrix
+
+```{r, fig.width=11, fig.height=9}
+revolver_plt_jackknife_edge_prb(Breast.fit)
+```
+
+while the jackknife statistics for the number of patients with an edge is a barplot where we can annotate all edges with mean count above ``cutoff.annotate.numEdges``
+
+```{r, fig.width=5, fig.height=7}
+revolver_plt_jackknife_edge_counts(Breast.fit, cutoff.annotate.numEdges = 4)
+```
+
+## Plot functions for S3 objects
+
+* For class ``rev_phylo``, function ``plot`` will use ``revolver_plt_tree`` to plot the tree.
+```{r, eval = FALSE}
+plot(Breast.fit$phylogenies$PD9193[[1]])
+```
+
+* For class ``rev_cohort``, function ``plot`` will automatize the creation of PDF reports for a set of patients, via repeated calls to ``revolver_report_patient``. This function outputs only to file.
+
+```{r, results='hide', eval = FALSE}
+#  To show this we convert ``Breast.fit`` to the proper class
+conv = Breast.fit
+class(conv) = 'rev_cohort'
+
+plot(conv, patients = Breast.fit$patients)
+```
+  
+
+* For class ``rev_cohort_fit``, function ``plot`` will automatize the creation of a PDF report for a set of patients, via repeated calls to ``revolver_report_fit_patient``.  This function outputs only to file.
+
+```{r, results='hide', eval = FALSE}
+class(Breast.fit)
+plot(Breast.fit, patients = Breast.fit$patients)
+```
+  
