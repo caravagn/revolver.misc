@@ -31,20 +31,17 @@ Breast.fit
 ```
 There are three types of plotting functions in REVOLVER:
 
-* functions  ``revolver_report_xxx`` where ``xxx`` is one of ``patient``, ``fit`` or ``clusters``. These functions use  ``revolver_plt_xxx`` plots to render a PDF report about a patient, fits and REVOLVER's clusters. 
+* functions  ``revolver_report_xxx`` where ``xxx`` is one of ``patient``, ``fit`` or ``clusters``. These functions allow to produce PDFs with almost all the relevant information (sort of multiplots); these functions are handy during to batch PDF creations during cohort analysis' tasks.
 
-* functions ``revolver_plt_xxx`` where ``xxx`` identifies the plot. These functions plot to the graphic device, but often accept a parameter ``file`` to save the plot to PDF (in that case, the device is created with  ``pdf``); 
+* to create PDF reports REVOLVER relies on simpler plotting functions named  ``revolver_plt_xxx``, where ``xxx`` is a keyword that identifies the plot. These functions plot by default to the graphic device, but often accept a  ``file`` parameter to save the plot to PDF; in that case, the device is created with a call to ``pdf`` and usually a ``cex`` parameter is available to control for the size of the output PDF; 
 
-* ``plot`` functions for S3 objects that combine some of the above function; see the bottom of this document.
+* Because REVOLVER has S3 objects, we have created  ``plot`` functions  that provide easy access to some of the above  ``revolver_plt_xxx`` functions. 
 
-## PDF reports
+# PDF reports: ``revolver_report_xxx``
 
-> To assemble PDFs, REVOLVER uses [PDFjam](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/firth/software/pdfjam/), which is available for all Unix-like systems, and is compatible with Windows via Cygwin; check that you have it installed in your system.
+To assemble PDFs, REVOLVER uses [PDFjam](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/firth/software/pdfjam/), which is available for all Unix-like systems, and Windows (via Cygwin); check that you have it installed in your system.
 
-
-
-
-* Print to file a PDF report with data, trees and their rank for patient ``PD9770``
+**Report on data and trees for a patient.**
 ```{r, results='hide'}
 revolver_report_patient(Breast.fit, 'PD9770', cex = 1.5)
 ```
@@ -78,7 +75,7 @@ jamPDF(
 ```
 
 
-## Plotting functions
+# Plotting functions ``revolver_plt_xxx``
 
 ### Data and trees for a patient
 

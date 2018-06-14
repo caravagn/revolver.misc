@@ -120,28 +120,30 @@ Breast.fit
 There are three types of plotting functions in REVOLVER:
 
   - functions `revolver_report_xxx` where `xxx` is one of `patient`,
-    `fit` or `clusters`. These functions use `revolver_plt_xxx` plots to
-    render a PDF report about a patient, fits and REVOLVER’s clusters.
+    `fit` or `clusters`. These functions allow to produce PDFs with
+    almost all the relevant information (sort of multiplots); these
+    functions are handy during to batch PDF creations during cohort
+    analysis’ tasks.
 
-  - functions `revolver_plt_xxx` where `xxx` identifies the plot. These
-    functions plot to the graphic device, but often accept a parameter
-    `file` to save the plot to PDF (in that case, the device is created
-    with `pdf`);
+  - to create PDF reports REVOLVER relies on simpler plotting functions
+    named `revolver_plt_xxx`, where `xxx` is a keyword that identifies
+    the plot. These functions plot by default to the graphic device, but
+    often accept a `file` parameter to save the plot to PDF; in that
+    case, the device is created with a call to `pdf` and usually a `cex`
+    parameter is available to control for the size of the output PDF;
 
-  - `plot` functions for S3 objects that combine some of the above
-    function; see the bottom of this document.
+  - Because REVOLVER has S3 objects, we have created `plot` functions
+    that provide easy access to some of the above `revolver_plt_xxx`
+    functions.
 
-## PDF reports
+# PDF reports: `revolver_report_xxx`
 
-> To assemble PDFs, REVOLVER uses
-> [PDFjam](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/firth/software/pdfjam/),
-> which is available for all Unix-like systems, and is compatible with
-> Windows via Cygwin; check that you have it installed in your system.
+To assemble PDFs, REVOLVER uses
+[PDFjam](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/firth/software/pdfjam/),
+which is available for all Unix-like systems, and Windows (via Cygwin);
+check that you have it installed in your system.
 
-  - Print to file a PDF report with data, trees and their rank for
-    patient `PD9770`
-
-<!-- end list -->
+**Report on data and trees for a patient.**
 
 ``` r
 revolver_report_patient(Breast.fit, 'PD9770', cex = 1.5)
@@ -181,7 +183,7 @@ jamPDF(
 )                 
 ```
 
-## Plotting functions
+# Plotting functions `revolver_plt_xxx`
 
 ### Data and trees for a patient
 
@@ -389,21 +391,21 @@ revolver_plt_DET_index(Breast.fit, N = 100)
 
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
-    ##   [1] 36.58310 33.94250 30.10426 34.56350 37.10766 38.17583 36.28816
-    ##   [8] 35.06624 34.06850 32.16168 35.69785 36.75939 34.74318 38.71252
-    ##  [15] 36.56308 36.84374 35.88490 36.27426 34.37698 37.28695 37.53044
-    ##  [22] 37.42462 38.04100 35.27596 33.60850 35.74741 35.72149 36.28510
-    ##  [29] 41.07925 39.11374 37.51561 33.24746 37.39879 33.30640 37.37908
-    ##  [36] 31.30006 37.49331 34.82463 35.12689 36.69929 31.56922 39.68761
-    ##  [43] 34.53637 39.60182 33.72110 36.77199 35.78958 30.32023 35.92934
-    ##  [50] 36.46091 28.80465 37.93906 38.70931 36.68910 32.71071 35.49088
-    ##  [57] 38.16556 35.95108 40.42975 32.93079 35.71519 38.20119 31.14034
-    ##  [64] 38.60086 36.96020 35.19287 28.43058 36.61744 35.76702 35.84270
-    ##  [71] 30.08855 35.49883 35.89843 38.64846 37.17336 34.58858 38.32433
-    ##  [78] 35.63135 37.32966 37.01169 37.60855 37.25636 36.93804 31.28884
-    ##  [85] 31.74194 34.93898 36.63121 31.05876 34.80086 36.46907 38.64670
-    ##  [92] 34.43522 37.08601 38.50238 37.82725 33.74016 35.70950 40.14945
-    ##  [99] 28.51001 35.27897
+    ##   [1] 34.99315 30.60185 39.70057 36.29703 40.01415 37.97141 37.09889
+    ##   [8] 36.07233 35.08302 35.26035 34.32606 33.72794 37.43196 36.72381
+    ##  [15] 27.88697 35.63962 34.33098 33.28925 32.17331 34.13885 37.87888
+    ##  [22] 34.37365 37.11823 29.79099 29.24502 34.92502 37.29506 37.44163
+    ##  [29] 38.70536 37.13817 34.54664 36.66370 39.45478 37.50509 31.21533
+    ##  [36] 30.30852 30.94586 29.84155 41.07492 33.59950 36.77109 36.16781
+    ##  [43] 36.10972 35.16898 37.51645 34.95710 38.57321 44.61270 36.34466
+    ##  [50] 38.84566 35.78367 33.76850 38.86190 33.78829 39.86922 36.07920
+    ##  [57] 34.18620 35.33821 39.35268 39.53100 32.47472 33.92618 34.29693
+    ##  [64] 36.36399 32.77943 31.38099 31.75019 31.46366 42.34689 38.87002
+    ##  [71] 38.90610 41.18168 32.78360 33.90141 41.39369 38.07729 25.73963
+    ##  [78] 32.16590 36.14279 27.03922 36.19019 36.74065 34.48924 31.96076
+    ##  [85] 37.69765 33.72825 33.54664 38.83656 35.28744 37.51141 34.31927
+    ##  [92] 30.53455 32.50910 35.91426 39.31383 30.82944 38.61643 39.56292
+    ##  [99] 32.00621 38.90552
 
 For each driver, it is reported as estimated empirically from data
 
