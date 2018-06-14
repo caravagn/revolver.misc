@@ -2,3 +2,7 @@
 .DS_Store
 .DS_Store
 .DS_Store
+*.log
+vignette_CRC_Cross_et_al/.Rhistory
+*.history
+.DS_Store

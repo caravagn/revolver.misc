@@ -1,0 +1,334 @@
+---
+title: "CRC analysis with REVOLVER"
+author: "Giulio Caravagna"
+institute: "Institute for Cancer Research"
+date: "June 10, 2018"
+email: "giulio.caravagna@ed.ac.uk"
+output: rmarkdown::github_document
+# output:
+#   prettydoc::html_pretty:
+#     theme: cayman
+#     highlight: github
+---
+
+We present the Colorectal cancer (CRC) analysis with REVOLVER discussed in the main REVOLVER paper. For information about this notebook, write to
+
+* Giulio Caravagna, Institute for Cancer Research, London. Email: giulio.caravagna@ed.ac.uk.
+
+REVOLVER is available as an R package at [Github](https://github.com/caravagn/revolver).
+
+```{r, eval = FALSE}
+devtools::install_github("caravagn/revolver")
+```
+
+
+Original data is available from the following manuscript:
+
+* Cross W et al. *The evolutionary landscape of colorectal carcinogenesis*. Nat Eco Evo, to appear, 2018.
+
+### Building a cohort object
+
+```{r, echo = TRUE, warning=FALSE}
+# Load REVOLVER and disable crayon's coloured output that renders badly in HTML,
+# as well as REVOLVER's progress bars...
+library(revolver)
+options(crayon.enabled = FALSE)
+options(revolver.progressBar = FALSE)
+```
+
+
+In this notebook we refer to "SNVs" to indicate mutations annotated in the original paper (even if some of them are in/dels), and we call "clones" the set of SNVs detected in the same samples of a patient.
+
+The format of input ``data`` is REVOLVER's standard data.frame, that we pre-prepared. Notice that we subset data from Cross W et al to contain just driver SNVs. This is not a general pre-requisite of REVOLVER, which can process all mutations annotated in a phylogenetic tree. 
+
+```{r, echo = TRUE, message=FALSE}
+# Load the SNVs that we prepared.
+data(CRC)
+data = CRC
+print(head(data))
+```
+
+
+The first thing to do is to build a ``rev_cohort`` S3 object in REVOLVER. To do that, we need a parsing function to transform strings like ``"R1:1;R2:1;R3:1;R4:0"`` into equivalent matrices. This does the job.
+
+```{r, echo = T}
+print(revolver:::CCF.parser)
+revolver:::CCF.parser("R1:1;R2:1;R3:1;R4:0")
+```
+
+We are now ready to build a REVOLVER object from ``data``. We do that with function ``revolver_cohort``, and give it some parameters:
+
+* ``ONLY.DRIVER = FALSE`` to use all annotated SNVs; 
+* ``MIN.CLUSTER.SIZE = 0`` to use all clusters in the data.
+
+For this simple dataset these parameters are not very interesting in practice, the first one is also useless because we have already selected just driver events. 
+
+```{r, echo = T}
+cohort = revolver_cohort(
+  dataset = data,
+  CCF.parser = revolver:::CCF.parser,
+  annotation = 'CRC cohort of adenomas and carcinomas',
+  options = list(
+    ONLY.DRIVER = FALSE, 
+    MIN.CLUSTER.SIZE = 0)
+)
+```
+
+### Basic data reshaping
+
+You can immediately start playing with the ``cohort`` object. If you ``print`` it, function ``revolver_check_cohor`` will check the data. 
+```{r, echo = T}
+print(cohort)
+```
+
+In this case, ``revolver_check_cohor`` reports us two messages:
+
+* driver SNVs (``ACVR2A``, ``AKAP9``, ``ARID2``, etc.) occur only in one patient,
+
+* and that 3 patients have only 1 clone/ cluster harbouring one (or possibly more) driver SNVs
+
+Because REVOLVER correlates reccurrent drivers, we can remove non-recurrent SNVs. For patients ``adenoma_9``, ``carcinoma_10`` and ``carcinoma_3``, there is nothing that we should actually do. REVOLVER is just informing us that, for those datasets, the only thing that we can do is to expand the clone where the drivers occur, in the second step of REVOLVER's main algorithm.
+
+To subset the data we can use a function ``clonal.subclonal.table`` that is not exported by REVOLVER, but that creates a table of occurrences of each annotated driver, sorted by marginal frequency.
+
+```{r, echo = T}
+# Recurrent SNVs are top of the table, try head(table) 
+table = revolver:::clonal.subclonal.table(cohort)
+tail(table, n = 10) # Show last-10
+```
+
+We take those drivers that occur in at least 2 patients, and use ``revolver_subsetDrivers`` to subset the cohort object. After a call to ``revolver_subsetDrivers``, function ``revolver_check_cohor`` is called again.
+```{r}
+table = table[table$Counts > 1, ]
+cohort = revolver_subsetDrivers(cohort, rownames(table))
+```
+
+Now our cohort has only 11 drivers because we removed 9.
+```{r}
+cohort
+```
+
+
+### Constructing patient's trees
+
+To use REVOLVER we need to have a set of tree models for each one of our input patients. In this case, because data is binary, we want to build *mutation trees* as described in the main REVOLVER paper.
+
+We have a function ``revolver_compute_CLtrees`` to compute them, and store the result back in our ``cohort`` object. Each tree is scored by its mutual information.
+
+>CL stands for [Chow-Liu tree](https://en.wikipedia.org/wiki/Chow%E2%80%93Liu_tree), which is the statistical name for this type of tree-distribution. [Mutual Information](https://en.wikipedia.org/wiki/Mutual_information)  is a standard measure of association between random variables, it is well known in the context of information theory.
+
+The function has some arguments, and allows to generate either exhaustively or via Montecarlo sampling the possible trees for each patient. Parameters are
+
+* ``sspace.cutoff = 10000``, the maximum number of trees to generate exhaustively, if that is above this value, we switch to Montecarlo;
+* ``n.sampling = 5000``, if we do Montecarlo, this is how many we sample;
+* ``store.max = 200``, regardless the generation strategy, this is the number of trees that we store, at maximum, for each patient;
+* ``overwrite = FALSE``, this is just to say that, if we have already computed the trees for ``patient``, we should skip this computation.
+
+This chunk generates quite some output to recapitulate the generated trees; we omit it from this markdown.
+```{r, message=FALSE, echo=T}
+for(patient in cohort$patients)
+  cohort = revolver_compute_CLtrees(
+    cohort, 
+    patient, 
+    options = list(sspace.cutoff = 10000,
+                   n.sampling = 5000,
+                   store.max = 200,
+                   overwrite = FALSE))
+```
+
+Execution with this cohort is very fast, as we do not really have many possible trees that are suitable for the data.
+After this code, our ``cohort`` object is different, as we can see by printing it again.
+
+```{r, message=FALSE}
+cohort
+```
+
+
+We can also visualize trees. Trees are ranked by score, and stored in a named list inside ``cohort$phylogenies``; so for instance tree ranked 1 in ``adenoma_3`` (which has 3 nodes) can be visualized by simply using the ``print`` function of the associated ``rev_phylo`` S3 object.
+
+```{r, echo = TRUE}
+tree = cohort$phylogenies[['adenoma_3']][[1]]
+tree
+```
+
+The above visualization is faithful to the tree structure, and inform us of other features of this tree, like its **information transfer**, the score, sample attachment etc. We can see more stats for this tree, and his associated data, which is stored in matrix ``CCF``.
+```{r, echo = TRUE}
+tree$CCF
+stats.rev_phylo(tree)
+```
+
+Function ``stats.rev_phylo`` computes violations for this tree. Some of them, like ``CCF.pigeonhole`` are not interesting for a binary tree, while we care  about ``Suppes`` (here computed by adding a wilde-type node with all 0s). We can definitely plot a tree; the colouring of the edges reflect the information transfer.
+
+```{r, echo = TRUE}
+plot(tree)
+```
+
+## Fitting models with REVOLVER
+
+REVOLVER will fit a cohort with function ``revolver_fit``. This function implements the 2-steps algorithm described in the main paper. In this case we use the following parameters:
+
+* ``initial.solution = NA``, which tells REVOLVER to sample a random initial condition at every initialization of its EM.
+* ``transitive.orderings = FALSE``, which tells REVOLVER not to compute transitive closures of the identified relations, in between the first and the second parts of the fitting algorithm (this should be the default unless you really understood the method and you want to play around with this parameter).
+* ``max.iterations = 10``, which tells REVOLVER to force stop after 10 EM-steps.
+* ``parallel = verbose = FALSE``, which tells REVOLVER to use the sequential implementation, without verbose output.
+* ``restarts = 1``, which tells REVOLVER to repeat the fit 2 times (1+1) - usually, you want this to be quite large, at least 10 - and store the one with lower median goodness-of-fit penalty.
+
+
+```{r, echo = TRUE}
+fit = revolver_fit(cohort, 
+                   initial.solution = NA, 
+                   transitive.orderings = FALSE, 
+                   max.iterations = 10, 
+                   parallel = FALSE, 
+                   verbose = FALSE,
+                   restarts = 1)
+```
+
+You can see the new ``fit`` S3 object of class ``rev_cohort_fit`` which is a modification of ``cohort``, and it will output the model fits as well.
+
+```{r}
+fit
+```
+
+You can plot the fit that, by default, will output to PDF files your models. See the manual entry for the S3 class function ``?plot.rev_cohort_fit`` and specifically option ``out.file = 'REVOLVER-cohort.pdf'`` to change destination. Here, we set layout ``"1x1"`` which means that each plot goes in a full page. 
+```{r, eval= TRUE, message=FALSE, results='hide'}
+plot(fit)
+```
+
+Notice that for each tree now REVOLVER visualizes also the expanded evolutionary trajectories for driver mutations inside the same node, as well as the information transfer for the model.
+
+**Output file:** !["REVOLVER-cohort.pdf"](./REVOLVER-cohort.pdf) 
+
+
+
+
+## Computing REVOLVER hierarchical clusters
+
+In REVOLVER, once you have fit your models you can use the multinomial fits and the trees to compute **hierarchical clusters** of tumours likely driven by similar evolutionary pressures. 
+
+Clustering requires usually 3 steps
+
+- computation of REVOLVER's **evolutionary distance** (*h*, in the manuscript);
+- identification of good clustering parameters for dendogram cuts;
+- actual dendogram cut.
+
+We begin by using ``revolver_evo_distance`` to compute the distance function. We set parameters that use the germline node ``GL``, and skip transitive closures. These should be standard settings.
+
+```{r, eval= TRUE, message=FALSE}
+  fit = revolver_evo_distance(fit, 
+                              use.GL = TRUE, 
+                              transitive.closure = FALSE)
+```
+
+We then make use of the function ``revolver_infoclustering`` which will portrait some possible clustering results where we to pick certain parameters. Again, this is plot to a PDF file that you might want to inspect (default output ``'Rplot.pdf'``). We have some parameters also here:
+
+* ``min.group.size=3``, to set minimum group size to 3 tumours.
+* ``do.plot=TRUE``, to ask for plots.
+
+```{r, eval= TRUE, message=FALSE, results='hide'}
+  revolver_infoclustering(fit, 
+                          min.group.size = 2, 
+                          do.plot = TRUE)
+```
+
+
+**Output file:** !["Rplot.pdf"](./Rplot.pdf) 
+
+
+In this case we feel that a good set of parameters is:
+
+* ``hc.method = 'ward'``, the Ward method for dendogram computation,
+* ``split.method = 'cutreeHybrid'``, and the hybrid cutting strategy for determine the output clusters.
+
+The function plots the results in a nice heatmap format with annotated features, and save it to the default files ``"REVOLVER-clustering.pdf"``, plus the consensus per group (file ``"Consensus.pdf"``). In this case we want all features to be annotated, and thus we set their minimum cutoff (frequency) to 1.
+
+```{r, eval= TRUE, message = FALSE, warning = FALSE, results='hide'}
+fit = revolver_cluster(fit, 
+                        hc.method = 'ward',
+                        min.group.size = 3, 
+                        split.method  = 'cutreeHybrid')
+```
+
+and we can plot the outputs to file as well.
+```{r, eval= TRUE, message = FALSE, warning = FALSE}
+revolver_plt_rclusters(fit, 
+                       file = "REVOLVER-clustering.pdf",
+                       cutoff.features_annotation = 1)
+```
+**Output file:** !["REVOLVER-clustering.pdf"](./REVOLVER-clustering.pdf) 
+
+
+## A One-step analysis
+
+The breakdown of the above analysis is quite clear. So, we make available to the user a unique function ``revolver_analyzer`` that wraps all the above steps, and produce some further output not discussed in this notebook. The function carries out clustering also without the germline node, as we found that usefull in exploratory data analysis.
+
+The function ``revolver_analyzer`` contains parameters that will be forwarded to the appropriate function calls. It should be evident at this point of the notebook what those parameters stand for.
+
+```{r, eval= FALSE}
+revolver_analyzer(
+  cohort, 
+  type = 'binary', # type of data  
+  cohort.name = 'CRC-Cross',
+  folder.output = 'Drivers_all_standard_parameters', 
+  do.plots = TRUE,
+  options.trees = list(
+    sspace.cutoff = 10000, 
+    n.sampling = 5000, 
+    store.max = 200, 
+    overwrite = FALSE),
+  options.fit = list(
+    initial.solution = NA, 
+    transitive.orderings = FALSE, 
+    restarts = 10),
+  options.clustering.withGL = list(
+    transitive.closure = FALSE, 
+    min.group.size = 3, 
+    hc.method = 'ward', 
+    cutoff.features_annotation = 1, 
+    split.method = 'cutreeHybrid'),
+  options.clustering.withoutGL = list(
+    transitive.closure = FALSE, 
+    min.group.size = 3, 
+    hc.method = 'ward', 
+    cutoff.features_annotation = 1, 
+    split.method = 'cutreeDynamic')
+)
+```
+
+## Assessing model confidence
+
+The confidence of the models can be assessed with a resampling method that exploits the jackknife. The procedure is parallle, and performs ``N`` resampling steps where, at each iteration, it discards a randomly chosen subset of patients (e.g., some % of ``n``, the cohort size), and compute:
+
+* the probability that two patients are clustered together;
+* the probability that an edge is detected;
+* the number of models that have an edge.
+
+To compute these statistics the fit and clustering are re-computed for each resample; this should be done with  the same parameters used in the analysis of the full cohort. Here for example we show a computation with ``N=100`` resamples and a leave out factor ``p=0.1`` (which means 2 patients per iteration).
+
+
+```{r, eval = TRUE}
+fit =  revolver_jackknife(fit, resamples = 10, leave.out = 0.1)
+```
+
+
+Then, we can plot the jackknife statistics; we begin with the co-clustering probability (stability measure).
+```{r, eval = TRUE}
+revolver_plt_jackknife_coclust(fit, cutoff.annotate.numbers = .6)
+```
+
+As well as the overall boxplot that gives us a visual information on the median stability
+```{r, eval = TRUE}
+revolver_plt_jackknife_coclust_bplot(fit)
+```
+ 
+Then we look into the edges that constitute the evolutionary trajectories, and plot the edge-detection probability across resamples.
+```{r, eval = TRUE}
+revolver_plt_jackknife_edge_prb(fit)
+```
+
+And we conclude with the average number of patients harbouring an edge
+
+```{r, eval = TRUE}
+revolver_plt_jackknife_edge_counts(fit)
+```
+
