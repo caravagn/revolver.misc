@@ -3,9 +3,8 @@ CRC analysis with REVOLVER
 Giulio Caravagna
 June 10, 2018
 
-We present the Colorectal cancer (CRC) analysis with REVOLVER discussed
-in the main REVOLVER paper. For information about this notebook, write
-to
+We present the analysis of the Colorectal Cancer (CRC) cohort discussed
+in the REVOLVER paper. For information about this notebook, write to
 
   - Giulio Caravagna, Institute for Cancer Research, London. Email:
     <giulio.caravagna@ed.ac.uk>.
@@ -20,7 +19,7 @@ devtools::install_github("caravagn/revolver")
 Original data is available from the following manuscript:
 
   - Cross W et al. *The evolutionary landscape of colorectal
-    carcinogenesis*. Nat Eco Evo, to appear,
+    carcinogenesis*. Nature Ecology and Evolution, to appear,
 2018.
 
 ### Building a cohort object
@@ -43,7 +42,7 @@ just driver SNVs. This is not a general pre-requisite of REVOLVER, which
 can process all mutations annotated in a phylogenetic tree.
 
 ``` r
-# Load the SNVs that we prepared.
+# Load the SNVs that we prepared and that comes with REVOLVER's package
 data(CRC)
 data = CRC
 print(head(data))
@@ -179,7 +178,7 @@ In this case, `revolver_check_cohor` reports us two messages:
     possibly more) driver SNVs
 
 Because REVOLVER correlates reccurrent drivers, we can remove
-non-recurrent SNVs. For patients `adenoma_9`, `carcinoma_10` and
+non-recurrent ones For patients `adenoma_9`, `carcinoma_10` and
 `carcinoma_3`, there is nothing that we should actually do. REVOLVER is
 just informing us that, for those datasets, the only thing that we can
 do is to expand the clone where the drivers occur, in the second step of
@@ -1164,23 +1163,347 @@ fit
 
 You can plot the fit that, by default, will output to PDF files your
 models. See the manual entry for the S3 class function
-`?plot.rev_cohort_fit` and specifically option `out.file =
-'REVOLVER-cohort.pdf'` to change destination. Here, we set layout
-`"1x1"` which means that each plot goes in a full
-    page.
+`?plot.rev_cohort_fit`.
 
 ``` r
 plot(fit)
 ```
 
+    ##  [ REVOLVER Plot: fits (tree, trajectories, information transfer) ] 
+    ##   - Patients = adenoma_1, adenoma_2, adenoma_3, adenoma_4, adenoma_5, adenoma_6, adenoma_7, adenoma_8, adenoma_9, carcinoma_1, carcinoma_10, carcinoma_2, carcinoma_3, carcinoma_5, carcinoma_6, carcinoma_7, carcinoma_8, carcinoma_9_distal, carcinoma_9_proximal
+
     ## Warning in is.na(file): is.na() applied to non-(list or vector) of type
     ## 'closure'
+
+    ## 
+    ## --------------------
+    ## Processing adenoma_1
+    ## --------------------
+    ##  [ REVOLVER Plot: report on fit for adenoma_1 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of adenoma_1 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of adenoma_1 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-adenoma_1.pdf ] 
+    ##   - Input files = adenoma_1-fit.pdf, adenoma_1-trajectories.pdf, adenoma_1-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## --------------------
+    ## Processing adenoma_2
+    ## --------------------
+    ##  [ REVOLVER Plot: report on fit for adenoma_2 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of adenoma_2 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of adenoma_2 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-adenoma_2.pdf ] 
+    ##   - Input files = adenoma_2-fit.pdf, adenoma_2-trajectories.pdf, adenoma_2-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## --------------------
+    ## Processing adenoma_3
+    ## --------------------
+    ##  [ REVOLVER Plot: report on fit for adenoma_3 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of adenoma_3 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of adenoma_3 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-adenoma_3.pdf ] 
+    ##   - Input files = adenoma_3-fit.pdf, adenoma_3-trajectories.pdf, adenoma_3-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## --------------------
+    ## Processing adenoma_4
+    ## --------------------
+    ##  [ REVOLVER Plot: report on fit for adenoma_4 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of adenoma_4 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of adenoma_4 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-adenoma_4.pdf ] 
+    ##   - Input files = adenoma_4-fit.pdf, adenoma_4-trajectories.pdf, adenoma_4-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## --------------------
+    ## Processing adenoma_5
+    ## --------------------
+    ##  [ REVOLVER Plot: report on fit for adenoma_5 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of adenoma_5 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of adenoma_5 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-adenoma_5.pdf ] 
+    ##   - Input files = adenoma_5-fit.pdf, adenoma_5-trajectories.pdf, adenoma_5-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## --------------------
+    ## Processing adenoma_6
+    ## --------------------
+    ##  [ REVOLVER Plot: report on fit for adenoma_6 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of adenoma_6 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of adenoma_6 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-adenoma_6.pdf ] 
+    ##   - Input files = adenoma_6-fit.pdf, adenoma_6-trajectories.pdf, adenoma_6-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## --------------------
+    ## Processing adenoma_7
+    ## --------------------
+    ##  [ REVOLVER Plot: report on fit for adenoma_7 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of adenoma_7 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of adenoma_7 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-adenoma_7.pdf ] 
+    ##   - Input files = adenoma_7-fit.pdf, adenoma_7-trajectories.pdf, adenoma_7-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## --------------------
+    ## Processing adenoma_8
+    ## --------------------
+    ##  [ REVOLVER Plot: report on fit for adenoma_8 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of adenoma_8 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of adenoma_8 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-adenoma_8.pdf ] 
+    ##   - Input files = adenoma_8-fit.pdf, adenoma_8-trajectories.pdf, adenoma_8-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## --------------------
+    ## Processing adenoma_9
+    ## --------------------
+    ##  [ REVOLVER Plot: report on fit for adenoma_9 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of adenoma_9 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of adenoma_9 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-adenoma_9.pdf ] 
+    ##   - Input files = adenoma_9-fit.pdf, adenoma_9-trajectories.pdf, adenoma_9-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## ----------------------
+    ## Processing carcinoma_1
+    ## ----------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_1 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_1 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_1 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_1.pdf ] 
+    ##   - Input files = carcinoma_1-fit.pdf, carcinoma_1-trajectories.pdf, carcinoma_1-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## -----------------------
+    ## Processing carcinoma_10
+    ## -----------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_10 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_10 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_10 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_10.pdf ] 
+    ##   - Input files = carcinoma_10-fit.pdf, carcinoma_10-trajectories.pdf, carcinoma_10-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## ----------------------
+    ## Processing carcinoma_2
+    ## ----------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_2 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_2 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_2 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_2.pdf ] 
+    ##   - Input files = carcinoma_2-fit.pdf, carcinoma_2-trajectories.pdf, carcinoma_2-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## ----------------------
+    ## Processing carcinoma_3
+    ## ----------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_3 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_3 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_3 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_3.pdf ] 
+    ##   - Input files = carcinoma_3-fit.pdf, carcinoma_3-trajectories.pdf, carcinoma_3-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## ----------------------
+    ## Processing carcinoma_5
+    ## ----------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_5 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_5 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_5 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_5.pdf ] 
+    ##   - Input files = carcinoma_5-fit.pdf, carcinoma_5-trajectories.pdf, carcinoma_5-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## ----------------------
+    ## Processing carcinoma_6
+    ## ----------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_6 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_6 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_6 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_6.pdf ] 
+    ##   - Input files = carcinoma_6-fit.pdf, carcinoma_6-trajectories.pdf, carcinoma_6-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## ----------------------
+    ## Processing carcinoma_7
+    ## ----------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_7 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_7 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_7 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_7.pdf ] 
+    ##   - Input files = carcinoma_7-fit.pdf, carcinoma_7-trajectories.pdf, carcinoma_7-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## ----------------------
+    ## Processing carcinoma_8
+    ## ----------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_8 ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_8 ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_8 ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_8.pdf ] 
+    ##   - Input files = carcinoma_8-fit.pdf, carcinoma_8-trajectories.pdf, carcinoma_8-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## -----------------------------
+    ## Processing carcinoma_9_distal
+    ## -----------------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_9_distal ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_9_distal ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_9_distal ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_9_distal.pdf ] 
+    ##   - Input files = carcinoma_9_distal-fit.pdf, carcinoma_9_distal-trajectories.pdf, carcinoma_9_distal-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE  
+    ## 
+    ## -------------------------------
+    ## Processing carcinoma_9_proximal
+    ## -------------------------------
+    ##  [ REVOLVER Plot: report on fit for carcinoma_9_proximal ] 
+    ##  [ REVOLVER Plot: fit for a patient ]
+
+    ##  [ REVOLVER Plot: trajectories from the fit of carcinoma_9_proximal ]
+
+    ##  [ REVOLVER Plot: information transfer from the fit of carcinoma_9_proximal ]
+
+    ##  [ REVOLVER jamPDF to REVOLVER-report-fit-patient-carcinoma_9_proximal.pdf ] 
+    ##   - Input files = carcinoma_9_proximal-fit.pdf, carcinoma_9_proximal-trajectories.pdf, carcinoma_9_proximal-itransfer.pdf  
+    ##   - PDF layout = 3x1  
+    ##   - PDF page type = a4  
+    ##   - PDF crop white margins = TRUE  
+    ##   - PDF delete input files = TRUE
 
 Notice that for each tree now REVOLVER visualizes also the expanded
 evolutionary trajectories for driver mutations inside the same node, as
 well as the information transfer for the model.
 
-**Output file:** ![“REVOLVER-cohort.pdf”](./REVOLVER-cohort.pdf)
+**Output file:** [“REVOLVER-cohort.pdf”](./REVOLVER-cohort.pdf)
 
 ## Computing REVOLVER hierarchical clusters
 
@@ -1256,10 +1579,41 @@ here:
 ``` r
   revolver_infoclustering(fit, 
                           min.group.size = 2, 
-                          do.plot = TRUE)
+                          do.plot = TRUE,
+                          file = "REVOLVER-infoClustering.pdf")
 ```
 
-**Output file:** ![“Rplot.pdf”](./Rplot.pdf)
+    ##  [ REVOLVER infoClustering ] 
+    ##   Hierarchical CLustering (HC) methods tested = average, single, complete, ward  
+    ##   Minimum size of each cluster = 2  
+    ##   Export plots = TRUE  
+    ##   Output file = REVOLVER-infoClustering.pdf  
+    ## 
+    ## -------------------------------------------------------------------
+    ## Hierarchical clustering: agglomerative coefficients (ACs) via agnes
+    ## -------------------------------------------------------------------
+
+    ##   average    single  complete      ward 
+    ## 0.8063136 0.5921053 0.8692699 0.9144742 
+    ## Largest AC: ward 
+    ## 
+    ## -------------------------------------------------------------
+    ## Dendrogram cut: optimal number "k" of clusters via dendextend
+    ## -------------------------------------------------------------
+
+    ##        cutreeDynamic : 4
+
+    ## 
+    ##    cutreeDynamicTree : 4
+
+    ## 
+    ##         cutreeHybrid : 5
+
+    ## 
+    ##  static (silhouette) : 4
+
+**Output file:**
+[“”REVOLVER-infoClustering.pdf“”](./REVOLVER-infoClustering.pdf)
 
 In this case we feel that a good set of parameters is:
 
@@ -1280,17 +1634,62 @@ fit = revolver_cluster(fit,
                         split.method  = 'cutreeHybrid')
 ```
 
+    ##  [ REVOLVER Clustering ] 
+    ##   Hierarchical CLustering (HC) method = ward  
+    ##   Dendrogram Splitting method = cutreeHybrid  
+    ##   Minimum size of each cluster = 3  
+    ## 
+    ## --------------------------------------------
+    ## Computing Hierarchical clustering with agnes
+    ## --------------------------------------------
+    ##  method : ward 
+    ##      AC : 0.9144742
+    ## ---------------------------------
+    ## Cutting dendogram with dendextend
+    ## ---------------------------------
+    ##  method : cutreeHybrid - from dynamicTreeCut 
+    ##     |g| : 3 
+    ##       k : 3 
+    ## 
+    ## -------------------------------
+    ## Clustering assignment and count
+    ## -------------------------------
+    ## Groups:
+    ## C1 C2 C3 
+    ##  7  7  5 
+    ## Assignments:# A tibble: 19 x 2
+    ##    entry                value
+    ##  * <chr>                <chr>
+    ##  1 adenoma_1            C2   
+    ##  2 adenoma_9            C2   
+    ##  3 carcinoma_10         C2   
+    ##  4 carcinoma_3          C2   
+    ##  5 adenoma_7            C2   
+    ##  6 adenoma_5            C2   
+    ##  7 carcinoma_2          C2   
+    ##  8 adenoma_2            C1   
+    ##  9 carcinoma_7          C1   
+    ## 10 carcinoma_1          C1   
+    ## 11 carcinoma_5          C1   
+    ## 12 carcinoma_8          C1   
+    ## 13 carcinoma_9_distal   C1   
+    ## 14 carcinoma_9_proximal C1   
+    ## 15 adenoma_3            C3   
+    ## 16 adenoma_4            C3   
+    ## 17 adenoma_6            C3   
+    ## 18 adenoma_8            C3   
+    ## 19 carcinoma_6          C3
+
 and we can plot the outputs to file as well.
 
 ``` r
 revolver_plt_rclusters(fit, 
-                       file = "REVOLVER-clustering.pdf",
                        cutoff.features_annotation = 1)
 ```
 
     ##  [ REVOLVER Plot: REVOLVER Cluster table with features table ] 
     ##   Cutoff to annotate features (min. observations) = 1  
-    ##   Output file = REVOLVER-clustering.pdf  
+    ##   Output file =  N/A   
     ## Features that will be annotated [ use.GL = TRUE ] 
     ##      from     to         edge count
     ## 1      GL    APC       GL~APC    19
@@ -1309,7 +1708,7 @@ revolver_plt_rclusters(fit,
     ## 31     GL  AMER1     GL~AMER1     2
     ## 36     GL ARID1A    GL~ARID1A     2
 
-**Output file:** ![“REVOLVER-clustering.pdf”](./REVOLVER-clustering.pdf)
+![](vignette_CRC_Cross_et_al_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 ## A One-step analysis
 
@@ -1368,15 +1767,15 @@ subset of patients (e.g., some % of `n`, the cohort size), and compute:
 To compute these statistics the fit and clustering are re-computed for
 each resample; this should be done with the same parameters used in the
 analysis of the full cohort. Here for example we show a computation with
-`N=100` resamples and a leave out factor `p=0.1` (which means 2 patients
-per iteration).
+`N = 50` resamples and a leave out factor `p=0.1` (which means 2
+patients per iteration).
 
 ``` r
-fit =  revolver_jackknife(fit, resamples = 10, leave.out = 0.1)
+fit =  revolver_jackknife(fit, resamples = 50, leave.out = 0.1)
 ```
 
     ##  [ REVOLVER Jackknife ] 
-    ##   - Resamples = 10  
+    ##   - Resamples = 50  
     ##   - Leave out = 0.1  
     ## Registering to use 2 cores out of 4 via "parallel" ... OK.
     ## 
@@ -1387,7 +1786,7 @@ fit =  revolver_jackknife(fit, resamples = 10, leave.out = 0.1)
     ## Warning in e$fun(obj, substitute(ex), parent.frame(), e$data): already
     ## exporting variable(s): cohort
 
-    ## Collected N = 10 resamples
+    ## Collected N = 50 resamples
 
     ## Warning in e$fun(obj, substitute(ex), parent.frame(), e$data): already
     ## exporting variable(s): cohort
@@ -1395,7 +1794,7 @@ fit =  revolver_jackknife(fit, resamples = 10, leave.out = 0.1)
     ## Collected N = 2 resamples
     ## 
     ## ---------------------------------------------
-    ## Jackknife completed, analyzing results: N =10
+    ## Jackknife completed, analyzing results: N =50
     ## ---------------------------------------------
     ## Stopping parallel clusters ... OK.
     ## 
@@ -1405,25 +1804,25 @@ fit =  revolver_jackknife(fit, resamples = 10, leave.out = 0.1)
     ## # A tibble: 19 x 19
     ##    adenoma_1 adenoma_2 adenoma_3 adenoma_4 adenoma_5 adenoma_6 adenoma_7
     ##        <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
-    ##  1         0         0         0         0         8         0         7
-    ##  2         0         0         0         0         0         3         0
-    ##  3         0         0         0         7         0         7         0
-    ##  4         0         0         7         0         0         5         0
-    ##  5         8         0         0         0         0         0         7
-    ##  6         0         3         7         5         0         0         0
-    ##  7         7         0         0         0         7         0         0
-    ##  8         0         0         9         6         0         6         0
-    ##  9         7         0         0         0         8         0         6
-    ## 10         0         5         0         0         0         0         0
-    ## 11         8         0         0         0         8         0         7
-    ## 12         9         0         0         0         9         0         8
-    ## 13         8         0         0         0         8         0         7
-    ## 14         0         5         0         0         0         0         0
-    ## 15         0         0         9         7         0         6         0
-    ## 16         0         8         2         2         0         5         0
-    ## 17         0         5         0         0         0         0         0
-    ## 18         0         4         0         0         0         0         0
-    ## 19         0         5         0         0         0         0         0
+    ##  1         0         0         0         0        43         3        38
+    ##  2         0         0         8         8         0        16         0
+    ##  3         0         8         0        41         0        28         0
+    ##  4         0         8        41         0         0        32         0
+    ##  5        43         0         0         0         0         3        42
+    ##  6         3        16        28        32         3         0         3
+    ##  7        38         0         0         0        42         3         0
+    ##  8         2         8        40        43         2        35         2
+    ##  9        40         0         0         0        42         3        37
+    ## 10         0        23         0         0         0         0         0
+    ## 11        39         0         0         0        43         3        37
+    ## 12        42         0         0         0        44         3        39
+    ## 13        41         0         0         0        44         3        39
+    ## 14         0        22         0         0         0         0         0
+    ## 15         0         6        39        41         0        31         0
+    ## 16         0        33         9         9         0        17         0
+    ## 17         0        22         0         0         0         0         0
+    ## 18         0        18         0         0         0         0         0
+    ## 19         0        21         0         0         0         0         0
     ## # ... with 12 more variables: adenoma_8 <dbl>, adenoma_9 <dbl>,
     ## #   carcinoma_1 <dbl>, carcinoma_10 <dbl>, carcinoma_2 <dbl>,
     ## #   carcinoma_3 <dbl>, carcinoma_5 <dbl>, carcinoma_6 <dbl>,
@@ -1433,35 +1832,26 @@ fit =  revolver_jackknife(fit, resamples = 10, leave.out = 0.1)
     ## ------------------
     ## Median per cluster
     ## ------------------
-    ##  C2  C1  C3 
-    ## 0.8 0.7 0.7 
+    ##   C2   C1   C3 
+    ## 0.80 0.66 0.79 
     ## 
     ## -------------------------------
     ## Edge frequency across resamples
     ## -------------------------------
-    ## # A tibble: 20 x 3
+    ## # A tibble: 21 x 3
     ##    from   to     count
     ##  * <chr>  <chr>  <dbl>
-    ##  1 GL     APC      1  
-    ##  2 GL     FBXW7    1  
-    ##  3 APC    PIK3CA   1  
-    ##  4 FBXW7  PIK3CA   1  
-    ##  5 KRAS   PIK3CA   1  
-    ##  6 KMT2C  PIK3CA   1  
-    ##  7 GL     TCF7L2   0.9
-    ##  8 GL     BRAF     0.9
-    ##  9 GL     ARID1A   0.9
-    ## 10 TCF7L2 PIK3CA   0.9
-    ## 11 APC    KRAS     0.8
-    ## 12 APC    TP53     0.8
-    ## 13 GL     NRAS     0.8
-    ## 14 APC    KMT2C    0.7
-    ## 15 TCF7L2 KMT2C    0.7
-    ## 16 KRAS   KMT2C    0.7
-    ## 17 GL     AMER1    0.7
-    ## 18 GL     KMT2C    0.3
-    ## 19 GL     KRAS     0.2
-    ## 20 GL     TP53     0.2
+    ##  1 GL     APC     1   
+    ##  2 GL     FBXW7   1   
+    ##  3 GL     TCF7L2  0.98
+    ##  4 APC    KMT2C   0.92
+    ##  5 TCF7L2 KMT2C   0.92
+    ##  6 KRAS   KMT2C   0.92
+    ##  7 APC    PIK3CA  0.88
+    ##  8 FBXW7  PIK3CA  0.88
+    ##  9 GL     BRAF    0.88
+    ## 10 KRAS   PIK3CA  0.88
+    ## # ... with 11 more rows
 
 Then, we can plot the jackknife statistics; we begin with the
 co-clustering probability (stability measure).
@@ -1480,30 +1870,32 @@ revolver_plt_jackknife_coclust(fit, cutoff.annotate.numbers = .6)
     ## # A tibble: 19 x 19
     ##    adenoma_1 adenoma_2 adenoma_3 adenoma_4 adenoma_5 adenoma_6 adenoma_7
     ##        <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
-    ##  1       0         0         0         0         0.8       0         0.7
-    ##  2       0         0         0         0         0         0.3       0  
-    ##  3       0         0         0         0.7       0         0.7       0  
-    ##  4       0         0         0.7       0         0         0.5       0  
-    ##  5       0.8       0         0         0         0         0         0.7
-    ##  6       0         0.3       0.7       0.5       0         0         0  
-    ##  7       0.7       0         0         0         0.7       0         0  
-    ##  8       0         0         0.9       0.6       0         0.6       0  
-    ##  9       0.7       0         0         0         0.8       0         0.6
-    ## 10       0         0.5       0         0         0         0         0  
-    ## 11       0.8       0         0         0         0.8       0         0.7
-    ## 12       0.9       0         0         0         0.9       0         0.8
-    ## 13       0.8       0         0         0         0.8       0         0.7
-    ## 14       0         0.5       0         0         0         0         0  
-    ## 15       0         0         0.9       0.7       0         0.6       0  
-    ## 16       0         0.8       0.2       0.2       0         0.5       0  
-    ## 17       0         0.5       0         0         0         0         0  
-    ## 18       0         0.4       0         0         0         0         0  
-    ## 19       0         0.5       0         0         0         0         0  
+    ##  1      0         0         0         0         0.86      0.06      0.76
+    ##  2      0         0         0.16      0.16      0         0.32      0   
+    ##  3      0         0.16      0         0.82      0         0.56      0   
+    ##  4      0         0.16      0.82      0         0         0.64      0   
+    ##  5      0.86      0         0         0         0         0.06      0.84
+    ##  6      0.06      0.32      0.56      0.64      0.06      0         0.06
+    ##  7      0.76      0         0         0         0.84      0.06      0   
+    ##  8      0.04      0.16      0.8       0.86      0.04      0.7       0.04
+    ##  9      0.8       0         0         0         0.84      0.06      0.74
+    ## 10      0         0.46      0         0         0         0         0   
+    ## 11      0.78      0         0         0         0.86      0.06      0.74
+    ## 12      0.84      0         0         0         0.88      0.06      0.78
+    ## 13      0.82      0         0         0         0.88      0.06      0.78
+    ## 14      0         0.44      0         0         0         0         0   
+    ## 15      0         0.12      0.78      0.82      0         0.62      0   
+    ## 16      0         0.66      0.18      0.18      0         0.34      0   
+    ## 17      0         0.44      0         0         0         0         0   
+    ## 18      0         0.36      0         0         0         0         0   
+    ## 19      0         0.42      0         0         0         0         0   
     ## # ... with 12 more variables: adenoma_8 <dbl>, adenoma_9 <dbl>,
     ## #   carcinoma_1 <dbl>, carcinoma_10 <dbl>, carcinoma_2 <dbl>,
     ## #   carcinoma_3 <dbl>, carcinoma_5 <dbl>, carcinoma_6 <dbl>,
     ## #   carcinoma_7 <dbl>, carcinoma_8 <dbl>, carcinoma_9_distal <dbl>,
     ## #   carcinoma_9_proximal <dbl>
+
+![](vignette_CRC_Cross_et_al_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 As well as the overall boxplot that gives us a visual information on the
 median stability
@@ -1521,9 +1913,9 @@ revolver_plt_jackknife_coclust_bplot(fit)
     ## # A tibble: 3 x 2
     ##   entry value
     ## * <chr> <dbl>
-    ## 1 C2      0.8
-    ## 2 C1      0.7
-    ## 3 C3      0.7
+    ## 1 C2     0.8 
+    ## 2 C1     0.66
+    ## 3 C3     0.79
 
 ![](vignette_CRC_Cross_et_al_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
@@ -1546,30 +1938,32 @@ revolver_plt_jackknife_edge_prb(fit)
     ## # A tibble: 19 x 19
     ##    adenoma_1 adenoma_2 adenoma_3 adenoma_4 adenoma_5 adenoma_6 adenoma_7
     ##        <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
-    ##  1       0         0         0         0         0.8       0         0.7
-    ##  2       0         0         0         0         0         0.3       0  
-    ##  3       0         0         0         0.7       0         0.7       0  
-    ##  4       0         0         0.7       0         0         0.5       0  
-    ##  5       0.8       0         0         0         0         0         0.7
-    ##  6       0         0.3       0.7       0.5       0         0         0  
-    ##  7       0.7       0         0         0         0.7       0         0  
-    ##  8       0         0         0.9       0.6       0         0.6       0  
-    ##  9       0.7       0         0         0         0.8       0         0.6
-    ## 10       0         0.5       0         0         0         0         0  
-    ## 11       0.8       0         0         0         0.8       0         0.7
-    ## 12       0.9       0         0         0         0.9       0         0.8
-    ## 13       0.8       0         0         0         0.8       0         0.7
-    ## 14       0         0.5       0         0         0         0         0  
-    ## 15       0         0         0.9       0.7       0         0.6       0  
-    ## 16       0         0.8       0.2       0.2       0         0.5       0  
-    ## 17       0         0.5       0         0         0         0         0  
-    ## 18       0         0.4       0         0         0         0         0  
-    ## 19       0         0.5       0         0         0         0         0  
+    ##  1      0         0         0         0         0.86      0.06      0.76
+    ##  2      0         0         0.16      0.16      0         0.32      0   
+    ##  3      0         0.16      0         0.82      0         0.56      0   
+    ##  4      0         0.16      0.82      0         0         0.64      0   
+    ##  5      0.86      0         0         0         0         0.06      0.84
+    ##  6      0.06      0.32      0.56      0.64      0.06      0         0.06
+    ##  7      0.76      0         0         0         0.84      0.06      0   
+    ##  8      0.04      0.16      0.8       0.86      0.04      0.7       0.04
+    ##  9      0.8       0         0         0         0.84      0.06      0.74
+    ## 10      0         0.46      0         0         0         0         0   
+    ## 11      0.78      0         0         0         0.86      0.06      0.74
+    ## 12      0.84      0         0         0         0.88      0.06      0.78
+    ## 13      0.82      0         0         0         0.88      0.06      0.78
+    ## 14      0         0.44      0         0         0         0         0   
+    ## 15      0         0.12      0.78      0.82      0         0.62      0   
+    ## 16      0         0.66      0.18      0.18      0         0.34      0   
+    ## 17      0         0.44      0         0         0         0         0   
+    ## 18      0         0.36      0         0         0         0         0   
+    ## 19      0         0.42      0         0         0         0         0   
     ## # ... with 12 more variables: adenoma_8 <dbl>, adenoma_9 <dbl>,
     ## #   carcinoma_1 <dbl>, carcinoma_10 <dbl>, carcinoma_2 <dbl>,
     ## #   carcinoma_3 <dbl>, carcinoma_5 <dbl>, carcinoma_6 <dbl>,
     ## #   carcinoma_7 <dbl>, carcinoma_8 <dbl>, carcinoma_9_distal <dbl>,
     ## #   carcinoma_9_proximal <dbl>
+
+![](vignette_CRC_Cross_et_al_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 And we conclude with the average number of patients harbouring an edge
 
@@ -1584,19 +1978,19 @@ revolver_plt_jackknife_edge_counts(fit)
     ## --------------------------------------------
     ## Number of patients per edge across resamples
     ## --------------------------------------------
-    ## # A tibble: 30 x 4
+    ## # A tibble: 150 x 4
     ##    from  to    edge     count
     ##  * <chr> <chr> <fct>    <dbl>
     ##  1 GL    APC   GL~APC      17
     ##  2 APC   KRAS  APC~KRAS     7
-    ##  3 APC   TP53  APC~TP53     6
+    ##  3 APC   TP53  APC~TP53     7
     ##  4 GL    APC   GL~APC      17
-    ##  5 APC   KRAS  APC~KRAS     6
-    ##  6 APC   TP53  APC~TP53     6
+    ##  5 APC   TP53  APC~TP53     7
+    ##  6 APC   KRAS  APC~KRAS     6
     ##  7 GL    APC   GL~APC      17
-    ##  8 APC   TP53  APC~TP53     7
-    ##  9 APC   KRAS  APC~KRAS     6
+    ##  8 APC   KRAS  APC~KRAS     7
+    ##  9 APC   TP53  APC~TP53     6
     ## 10 GL    APC   GL~APC      17
-    ## # ... with 20 more rows
+    ## # ... with 140 more rows
 
 ![](vignette_CRC_Cross_et_al_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
