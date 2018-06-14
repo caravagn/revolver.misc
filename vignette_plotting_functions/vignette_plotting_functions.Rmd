@@ -39,13 +39,17 @@ There are three types of plotting functions in REVOLVER:
 
 ## PDF reports
 
-> To assemble PDFs, REVOLVER relies on [PDFjam](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/firth/software/pdfjam/) and other scripts like ``pdfScale.sh``. Scripts are included in REVOLVER's package, but PDFjam no; please, check that you have it installed in your system (PDFjam is available for all Unix-like systems, and should be compatible with Windows via Cygwin).
+> To assemble PDFs, REVOLVER uses [PDFjam](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/firth/software/pdfjam/), which is available for all Unix-like systems, and is compatible with Windows via Cygwin; check that you have it installed in your system.
 
 
-Print to file !["REVOLVER-report-patient-data-models-PD9770.pdf"](./REVOLVER-report-patient-data-models-PD9770.pdf) a PDF report with data, trees and their rank for patient ``PD9770``
+
+
+* Print to file a PDF report with data, trees and their rank for patient ``PD9770``
 ```{r, results='hide'}
 revolver_report_patient(Breast.fit, 'PD9770', cex = 1.5)
 ```
+Example output: ["REVOLVER-report-patient-data-models-PD9770.pdf"](https://github.com/caravagn/revolver.misc/blob/master/vignette_plotting_functions/REVOLVER-report-patient-data-models-PD9770.pdf).
+
  
 Print to file !["REVOLVER-report-fit-patient-PD9770.pdf"](./REVOLVER-report-fit-patient-PD9770.pdf) a PDF report with fit, evolutionary trajectories (exploded) and information transfer for patient ``PD9770``
 

@@ -133,20 +133,22 @@ There are three types of plotting functions in REVOLVER:
 
 ## PDF reports
 
-> To assemble PDFs, REVOLVER relies on
-> [PDFjam](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/firth/software/pdfjam/)
-> and other scripts like `pdfScale.sh`. Scripts are included in
-> REVOLVER’s package, but PDFjam no; please, check that you have it
-> installed in your system (PDFjam is available for all Unix-like
-> systems, and should be compatible with Windows via Cygwin).
+> To assemble PDFs, REVOLVER uses
+> [PDFjam](https://warwick.ac.uk/fac/sci/statistics/staff/academic-research/firth/software/pdfjam/),
+> which is available for all Unix-like systems, and is compatible with
+> Windows via Cygwin; check that you have it installed in your system.
 
-Print to file
-![“REVOLVER-report-patient-data-models-PD9770.pdf”](./REVOLVER-report-patient-data-models-PD9770.pdf)
-a PDF report with data, trees and their rank for patient `PD9770`
+  - Print to file a PDF report with data, trees and their rank for
+    patient `PD9770`
+
+<!-- end list -->
 
 ``` r
 revolver_report_patient(Breast.fit, 'PD9770', cex = 1.5)
 ```
+
+Example output:
+[“REVOLVER-report-patient-data-models-PD9770.pdf”](https://github.com/caravagn/revolver.misc/blob/master/vignette_plotting_functions/REVOLVER-report-patient-data-models-PD9770.pdf).
 
 Print to file
 ![“REVOLVER-report-fit-patient-PD9770.pdf”](./REVOLVER-report-fit-patient-PD9770.pdf)
@@ -387,21 +389,21 @@ revolver_plt_DET_index(Breast.fit, N = 100)
 
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
-    ##   [1] 36.20458 34.00851 34.44877 33.46172 38.59152 39.20442 37.76143
-    ##   [8] 31.21931 34.19181 35.06642 44.21299 37.52336 34.11008 34.24853
-    ##  [15] 35.63189 36.53577 34.11090 40.13706 39.40993 36.22716 33.72107
-    ##  [22] 35.97534 35.35200 36.22639 34.36750 44.45805 40.63487 35.37661
-    ##  [29] 36.35336 31.48637 30.93752 35.57629 36.55432 35.78285 34.32112
-    ##  [36] 33.32493 35.80723 39.64230 35.33155 34.66194 37.91012 39.24672
-    ##  [43] 35.37816 28.25924 40.51107 37.03851 35.92490 38.74601 33.56742
-    ##  [50] 31.30861 30.36060 28.45511 32.44907 38.07375 31.97743 39.14592
-    ##  [57] 35.30522 38.67617 38.53473 38.33173 36.32987 34.49202 34.89513
-    ##  [64] 35.16044 35.19624 40.46480 33.11586 33.46446 37.58055 34.12359
-    ##  [71] 36.14453 37.26645 31.61676 35.14612 35.50778 41.72700 41.48097
-    ##  [78] 30.51276 39.60777 36.57293 41.48504 38.65372 33.34499 32.14776
-    ##  [85] 34.36330 33.49903 29.86728 35.21616 29.54503 35.54498 32.77412
-    ##  [92] 39.49679 34.37922 36.21059 35.58294 36.59313 36.82172 35.37023
-    ##  [99] 34.74515 35.05567
+    ##   [1] 36.58310 33.94250 30.10426 34.56350 37.10766 38.17583 36.28816
+    ##   [8] 35.06624 34.06850 32.16168 35.69785 36.75939 34.74318 38.71252
+    ##  [15] 36.56308 36.84374 35.88490 36.27426 34.37698 37.28695 37.53044
+    ##  [22] 37.42462 38.04100 35.27596 33.60850 35.74741 35.72149 36.28510
+    ##  [29] 41.07925 39.11374 37.51561 33.24746 37.39879 33.30640 37.37908
+    ##  [36] 31.30006 37.49331 34.82463 35.12689 36.69929 31.56922 39.68761
+    ##  [43] 34.53637 39.60182 33.72110 36.77199 35.78958 30.32023 35.92934
+    ##  [50] 36.46091 28.80465 37.93906 38.70931 36.68910 32.71071 35.49088
+    ##  [57] 38.16556 35.95108 40.42975 32.93079 35.71519 38.20119 31.14034
+    ##  [64] 38.60086 36.96020 35.19287 28.43058 36.61744 35.76702 35.84270
+    ##  [71] 30.08855 35.49883 35.89843 38.64846 37.17336 34.58858 38.32433
+    ##  [78] 35.63135 37.32966 37.01169 37.60855 37.25636 36.93804 31.28884
+    ##  [85] 31.74194 34.93898 36.63121 31.05876 34.80086 36.46907 38.64670
+    ##  [92] 34.43522 37.08601 38.50238 37.82725 33.74016 35.70950 40.14945
+    ##  [99] 28.51001 35.27897
 
 For each driver, it is reported as estimated empirically from data
 
