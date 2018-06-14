@@ -152,23 +152,18 @@ revolver_report_patient(Breast.fit, 'PD9770', cex = 1.5)
 Example output:
 [“REVOLVER-report-patient-data-models-PD9770.pdf”](https://github.com/caravagn/revolver.misc/blob/master/vignette_plotting_functions/REVOLVER-report-patient-data-models-PD9770.pdf).
 
-Print to file
-![“REVOLVER-report-fit-patient-PD9770.pdf”](./REVOLVER-report-fit-patient-PD9770.pdf)
-a PDF report with fit, evolutionary trajectories (exploded) and
-information transfer for patient `PD9770`
+**Report on fit, evolutionary trajectories (exploded) and information
+transfer for a patient.**
 
 ``` r
 revolver_report_fit_patient(Breast.fit, 'PD9770', cex = 3)
 ```
 
-<!-- ```{r, eval = FALSE} -->
-
-<!-- revolver_report_clusters(Breast.fit, cex = 1.5) -->
-
-<!-- ``` -->
+Example output:
+[“REVOLVER-report-fit-patient-PD9770.pdf”](https://github.com/caravagn/revolver.misc/blob/master/vignette_plotting_functions/REVOLVER-report-fit-patient-PD9770.pdf).
 
 **Assembling your own PDFs.** You can assemble a bunch of PDFs via
-function
+REVOLVER’s function
 `jamPDF`.
 
 ``` r
@@ -198,11 +193,21 @@ revolver_plt_tree(x = tree, type = 'binary')
 
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-`type = 'binary'` tells which data we are using, and defines how to
-compute “Violations” via `stats.rev_phylo`: for `binary` the field
-reported is `$Suppes`, a violation is when the inequality holds as `<`.
-For `CCF`, the field reported is `$CCF.pigeonhole` and violations are
-due to the pigeonhole principle.
+A tree is a built over the groups annotated in the data, here named 1,
+2, 3, …, 11. Each node is coloured only if, whithin the gruop, there are
+annotated drivers. Here all groups but 4, 7, 8 and 9 have a driver
+annotated. Edges are coloured according to the trajectories that we can
+extract from this tree. For instance, the trajectories starting from 3
+and finishing in 11, is coloured orange to highlight that 3 is the
+upstream group; GL is a special node that means germline.
+
+The plot can also report violations that the tree has with respect to
+the data: `type = 'binary'` tells which type of data we are using, and
+defines how to compute violations which are normally returned by calling
+`stats.rev_phylo`. For `binary` data, which is the on used for breast
+cancer, the field reported is `$Suppes`, and a violation is when the
+inequality holds as `<`. For `CCF`, the field reported is
+`$CCF.pigeonhole` and violations are due to the pigeonhole principle.
 
 ``` r
 stats.rev_phylo(tree)
@@ -249,12 +254,6 @@ stats.rev_phylo(tree)
     ## 4     TRUE     TRUE     TRUE     TRUE     TRUE
     ## 6     TRUE     TRUE     TRUE     TRUE     TRUE
     ## 2     TRUE     TRUE    FALSE     TRUE     TRUE
-
-In this graphics colours encode information about the trajectories
-described by this tree. In particular, the colour of the edge determines
-the paths: i.e., here because 11 is below 3, the edge is coloured
-orange. Observe that nodes/ groups 4, 7, 8 and 9 have no driver
-annotated and are in light gray.
 
 **Plotting data for a patient.** You can plot a `pheatmap` of the input
 data, annotated with driver and clonality status. In that plot each row
@@ -318,8 +317,17 @@ which wraps a call to
 
 From the model fit, REVOLVER compute the expansion of all the nodes of
 the tree with at least one drivers associated, which leads us to the
-evolutionary trajectories of the
-model
+evolutionary trajectories of the model. In this case, we “expand” the
+coloured nodes, and project inside each expanded node the possible
+trajectories that could have lead to the accumulation of the annotated
+drivers. When there is no unique consensus on that, the expanded
+structure can be a general graph as in the case of the red node. In this
+case the only evidence that REVOLVER finds (from other patients) is that
+`ARID1B` is a driver that triggers after `TP53`; for the others we have
+uncertainty or no evidence, and hence they are connected to the germline
+node, as well as to the downstream node. For group 2, blue, we can
+instead retrieve a linear ordering for the drivers annotated in the
+group.
 
 ``` r
 revolver_plt_trajectories_patient(Breast.fit, patient = 'PD9850')
@@ -330,8 +338,15 @@ revolver_plt_trajectories_patient(Breast.fit, patient = 'PD9850')
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 At the same time, we can extract the information transfer from the model
-fit, and annotate some basic information on the
-plots
+fit, which consists in dropping the nodes from the above plot when they
+do not harbour any driver. The plot is annnotated: for each driver we
+report the number of times it is clonal and subclonal, and for each edge
+its frequency across the whole cohort (i.e., how often that is found in
+other patients). So for instance the event annotated as `TP53` is clonal
+in 27 patients, subclonal in 3, and every time that it is clonal it is
+connected to germline (giving support for the hypothesis of that event
+triggering tumour
+initiation).
 
 ``` r
 revolver_plt_itransfer_patient(Breast.fit, patient = 'PD9850')
@@ -391,21 +406,21 @@ revolver_plt_DET_index(Breast.fit, N = 100)
 
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
-    ##   [1] 34.99315 30.60185 39.70057 36.29703 40.01415 37.97141 37.09889
-    ##   [8] 36.07233 35.08302 35.26035 34.32606 33.72794 37.43196 36.72381
-    ##  [15] 27.88697 35.63962 34.33098 33.28925 32.17331 34.13885 37.87888
-    ##  [22] 34.37365 37.11823 29.79099 29.24502 34.92502 37.29506 37.44163
-    ##  [29] 38.70536 37.13817 34.54664 36.66370 39.45478 37.50509 31.21533
-    ##  [36] 30.30852 30.94586 29.84155 41.07492 33.59950 36.77109 36.16781
-    ##  [43] 36.10972 35.16898 37.51645 34.95710 38.57321 44.61270 36.34466
-    ##  [50] 38.84566 35.78367 33.76850 38.86190 33.78829 39.86922 36.07920
-    ##  [57] 34.18620 35.33821 39.35268 39.53100 32.47472 33.92618 34.29693
-    ##  [64] 36.36399 32.77943 31.38099 31.75019 31.46366 42.34689 38.87002
-    ##  [71] 38.90610 41.18168 32.78360 33.90141 41.39369 38.07729 25.73963
-    ##  [78] 32.16590 36.14279 27.03922 36.19019 36.74065 34.48924 31.96076
-    ##  [85] 37.69765 33.72825 33.54664 38.83656 35.28744 37.51141 34.31927
-    ##  [92] 30.53455 32.50910 35.91426 39.31383 30.82944 38.61643 39.56292
-    ##  [99] 32.00621 38.90552
+    ##   [1] 40.71326 42.43953 29.92040 36.96651 32.03014 35.73241 36.16207
+    ##   [8] 30.42872 29.70090 33.51499 40.91329 33.36527 36.93666 38.37372
+    ##  [15] 37.73692 34.21051 44.11689 38.95428 38.67768 35.62059 30.03178
+    ##  [22] 37.70733 31.85280 41.42334 38.82613 34.66594 35.80485 34.99145
+    ##  [29] 35.75273 35.23720 39.41988 33.51958 33.49134 25.91841 33.34658
+    ##  [36] 35.87489 38.53862 34.73581 40.49926 37.87914 39.73163 37.52099
+    ##  [43] 39.69226 29.60357 36.25198 31.73281 35.73295 31.57721 38.26098
+    ##  [50] 36.99041 28.26293 38.30259 39.60154 31.79035 36.24457 32.67964
+    ##  [57] 29.82326 34.88397 32.86029 44.14513 31.72691 34.33773 36.86255
+    ##  [64] 30.19955 32.49347 37.60485 42.71853 37.74256 30.56024 38.29459
+    ##  [71] 31.97582 35.39094 36.88872 39.26614 34.20161 36.33999 34.01593
+    ##  [78] 37.04902 33.66757 36.27603 36.77701 32.82806 33.73042 36.85249
+    ##  [85] 44.18488 37.82728 32.11427 35.24141 33.07460 33.91885 38.69453
+    ##  [92] 33.73792 31.65636 31.85989 37.78157 37.67226 39.52740 40.29107
+    ##  [99] 35.79126 38.94965
 
 For each driver, it is reported as estimated empirically from data
 
@@ -449,12 +464,16 @@ revolver_plt_DET_index_driver(Breast.fit)
 ### Visualizing clusters
 
 **Plotting features from REVOLVER clustering.** You can visualize
-REVOLVER clusters and trajectories (features) to spot relevant
-trajectories in each
-group.
+REVOLVER’s clusters and trajectories (features) to spot relevant
+trajectories in each group. This is probably one of the most important
+plots that you will produce from your
+analysis.
 
 ``` r
-revolver_plt_rclusters(Breast.fit, cutoff.features_annotation = 3, cex = 1)
+# We suppress the warnings just because we use some UNICODE chars to plot edges, and this give rise to a long list of useless warnings due to R's output graphics.
+suppressWarnings(
+  revolver_plt_rclusters(Breast.fit, cutoff.features_annotation = 3, cex = 1)
+)
 ```
 
     ##  [ REVOLVER Plot: REVOLVER Cluster table with features table ] 
@@ -487,228 +506,15 @@ revolver_plt_rclusters(Breast.fit, cutoff.features_annotation = 3, cex = 1)
     ## 141          +8q       PIK3CA        +8q~PIK3CA     4
     ## 163           GL         -17p           GL~-17p     4
 
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → TP53' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → TP53' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → TP53' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → +8q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → +8q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → +8q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-16q → -17p' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-16q → -17p' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-16q → -17p' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → -16q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → -16q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → -16q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-17p → +1q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-17p → +1q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-17p → +1q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-16q → +8q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-16q → +8q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-16q → +8q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → -17p' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → -17p' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → -17p' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → +1q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → +1q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → +1q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → -8p' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → -8p' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → -8p' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '+8q → amp(8q24.21)' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '+8q → amp(8q24.21)' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '+8q → amp(8q24.21)' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → PIK3CA' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → PIK3CA' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → PIK3CA' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → -16q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → -16q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'TP53 → -16q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-8p → +8q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-8p → +8q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-8p → +8q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-16q → amp(8p11.22)' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-16q → amp(8p11.22)' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '-16q → amp(8p11.22)' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'PIK3CA → -8p' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'PIK3CA → -8p' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'PIK3CA → -8p' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'amp(8p11.22) → +1q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'amp(8p11.22) → +1q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'amp(8p11.22) → +1q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → ARID1A' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → ARID1A' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → ARID1A' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → amp(11q13.3)' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → amp(11q13.3)' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → amp(11q13.3)' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → +1q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → +1q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → +1q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → +8q' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → +8q' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → +8q' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → GATA3' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → GATA3' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → GATA3' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '+1q → FLT4' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '+1q → FLT4' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '+1q → FLT4' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '+8q → PIK3CA' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '+8q → PIK3CA' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on '+8q → PIK3CA' in 'mbcsToSbcs': dot substituted for <92>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → -17p' in 'mbcsToSbcs': dot substituted for <e2>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → -17p' in 'mbcsToSbcs': dot substituted for <86>
-
-    ## Warning in strwidth(colnames(annotation_row), units = "in"): conversion
-    ## failure on 'GL → -17p' in 'mbcsToSbcs': dot substituted for <92>
-
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 **Plotting dendograms for REVOLVER and occurence-based clusters.** You
-can plot dendrograms that show REVOLVER clusters, or clusters given by
-the patterns of occurence of the annotated drivers (binary, or clonal/
-subclonal), coloured with REVOLVER clustering assignemnt.
+can plot dendrograms for REVOLVER’s clusters, or for clusters computed
+by scanning the patterns of occurence of the annotated drivers (binary,
+or clonal/ subclonal), coloured with REVOLVER clustering assignemnt. We
+usually use these to see how much difference it makes to consider the
+evolutionary trajectories, rather than the patterns of occurrences of
+the annotated drivers.
 
 ``` r
 revolver_plt_dendogram(Breast.fit, type = 'REVOLVER')
@@ -720,6 +526,8 @@ revolver_plt_dendogram(Breast.fit, type = 'REVOLVER')
     ##   Output file =  N/A
 
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+The other types of clusterings are accessible with the `type` parameter.
 
 ``` r
 par(mfrow = c(1,2))
@@ -746,7 +554,9 @@ revolver_plt_dendogram(Breast.fit, type = 'clonality')
 par(mfrow = c(1,1))
 ```
 
-**Bannerplot for REVOLVER clusters.**
+**Bannerplot for REVOLVER clusters.** This is a classical bannerplot
+that is sometimes used to determine the number of clusters in the data
+(especially with static cut methods).
 
 ``` r
 revolver_plt_rbannerplot(Breast.fit, cex = 1)
@@ -760,7 +570,8 @@ revolver_plt_rbannerplot(Breast.fit, cex = 1)
 **Tanglegrams to compare REVOLVER and occurence-based clusters.**
 Tanglegrams against clusters obtained by patterns of occurrences of the
 input alterations highlight how groups of patients change when you use
-REVOLVEr.
+REVOLVER. Use `type = 'clonality'` to compare against clonal/ subclonal
+patterns.
 
 ``` r
 revolver_plt_compare_dendograms(Breast.fit, cex = 1, type = 'binary')
@@ -776,11 +587,11 @@ revolver_plt_compare_dendograms(Breast.fit, cex = 1, type = 'binary')
     ## --------------------------------------------------------
 
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
-Use `type = 'clonality'` to compare against clonal/ subclonal patterns.
 
 **Plotting REVOLVER’s evolutionary distance.** You can display the
 distance that has been used to compute the clusters, for each pair of
-patients.
+patients. The parameters used to compute the distance are reported on
+top of the plot.
 
 ``` r
 revolver_plt_evodistance(Breast.fit, cex = 1)
@@ -792,24 +603,27 @@ revolver_plt_evodistance(Breast.fit, cex = 1)
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 **Plotting the models trajectories present in each of REVOLVER’s
-groups.** It might be convenient to plot the fit of each model by
-clustering group. You can use a function for this, which will also plot
-a table for the most frequent
-trajectories.
+groups.** It might be convenient to plot the fit of each patient, as
+separate files divided by REVOLVER’s cluster. This helps spot the
+features that define the clusters. We have prepared a function that
+makes this plot automatically; the function will also plot a table
+reporting the for the most frequent trajectories. As output, the
+function creates a set of `K` PDFs – if there are `K` clusters
+identified by REVOLVER – all named with a suffix that you specify by the
+string `file.suffix`. We do not show execution of this function
+here.
 
 ``` r
 revolver_plt_fit_by_group(Breast.fit, cex = 1, file.suffix = "REVOLVER-Clusters-FitsPerCluster.pdf")
 ```
 
-The output of this functions is a set of PDFs, named as the group, and
-followed by the string `file.suffix`, which you can change to organize
-your PDFs as you prefer. We do not show execution of this function here.
-
 ### Visualizing confidence (jackknife)
 
-**Plotting co-clustering statistics.** With all entries above 0.7
-annotated, the patient-x-patient matrix is plot
-as
+**Plotting co-clustering statistics.** The co-clustering statistics –
+i.e., the probability or clustering together two samples, across each
+resample – with all entries above 0.7 explcitly annotated as
+patient-by-patient
+matrix
 
 ``` r
 revolver_plt_jackknife_coclust(Breast.fit, cutoff.annotate.numbers = 0.7)
@@ -849,7 +663,9 @@ revolver_plt_jackknife_coclust(Breast.fit, cutoff.annotate.numbers = 0.7)
 
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-The boxplot per cluster is instead plot with this function
+From the above numbers, we can compute a boxplot per cluster which gives
+us a mean/ median stability value per cluster. This seems a sensitive
+summary statistics to report for each group.
 
 ``` r
 revolver_plt_jackknife_coclust_bplot(Breast.fit)
@@ -873,8 +689,8 @@ revolver_plt_jackknife_coclust_bplot(Breast.fit)
 
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
-**Plotting edge statistics.** The probability of detecting each edge
-across resamples is an alteration-x-alteration
+**Plotting edge statistics.** Concerning edges, the probability of
+detecting each edge across resamples is a driver-by-driver
     matrix
 
 ``` r
@@ -917,7 +733,7 @@ revolver_plt_jackknife_edge_prb(Breast.fit)
 ![](vignette_plotting_functions_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 while the jackknife statistics for the number of patients with an edge
-is a barplot where we can annotate all edges with mean count above
+is a barplot where we annotate all edges with mean count above
 `cutoff.annotate.numEdges`
 
 ``` r
