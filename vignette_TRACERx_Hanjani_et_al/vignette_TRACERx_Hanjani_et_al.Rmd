@@ -367,23 +367,31 @@ phylo = revolver_compute_phylogenies(TRACERx.COHORT, 'CRUK0002')
 print(phylo$phylogenies)
 ```
 
-We can also plot the phylogenetic trees for this patient.
+We can also plot the phylogenetic trees for this patient; in this case it goes directly to file ``REVOLVER-report-patient-data-models-CRUK0002.pdf``
 ```{r}
 plot(phylo, patients = 'CRUK0002')
 ```
 
-**Output file:** ["CRUK0002.pdf"](./CRUK0002.pdf) 
+**Output file:** ["REVOLVER-report-patient-data-models-CRUK0002.pdf"](./https://github.com/caravagn/revolver.misc/blob/master/vignette_TRACERx_Hanjani_et_al/REVOLVER-report-patient-data-models-CRUK0002.pdf) 
 
-<!-- ## Analysis, fitting the models -->
-
-<!-- <!-- In the current release we make available an S3 object that contains the pre-computed phylogenies for the TRACERx cohort. --> -->
-<!-- <!-- ```{r} --> -->
-<!-- <!-- data(TRACERx.cohort) --> -->
-<!-- <!-- print(TRACERx.cohort) --> -->
-<!-- <!-- ``` --> -->
-
-<!-- We have computed offline the phylogenetic trees for this cohort with the above parameters -->
-
-Once the analysis has been carried out, one can assess confidence of the estimates with the jackknife; see the CRC vignette attached to REVOLVER for an example. We suggest running these analyses on a cluster machine to speed up the computation (on a 40-core machines jackknife analysis requires ~30 minutes exploiting 90% of the available cores in parallel).
+Once the analysis has been carried out, one can assess confidence of the estimates with the jackknife; [see the other vignettes](https://github.com/caravagn/revolver/wiki/7.-Vignettes/) for an example. We suggest running these analyses on a cluster machine to speed up the computation (on a 40-core machines jackknife analysis requires ~30 minutes exploiting 90% of the available cores in parallel).
 
 
+## Pre-computed results made available
+
+The results from the computation of the jacckknife are available in an RData object (~100MB) that you can download from this repository:
+
+* [TRACERx-jackknife.RData](TRACERx-jackknife.RData)
+
+```{r}
+load('TRACERx-jackknife.RData', verbose = TRUE)
+cohort
+```
+
+Just verify that they are the same
+
+```{r, fig.width = 20, fig.height= 20}
+suppressWarnings(
+  revolver_plt_rclusters(cohort)
+)
+```

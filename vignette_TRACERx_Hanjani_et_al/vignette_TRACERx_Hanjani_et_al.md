@@ -2598,11 +2598,11 @@ print(phylo$phylogenies)
     ##         \-GL
     ##          \-2 :: MET, TERT
     ##           \-1 [R2] :: RB1, IKZF1, KRAS
+    ##            |-6 :: EP300
+    ##            | |-4
+    ##            | | \-3 [R3]
+    ##            | \-5 [R1] :: NF1
     ##            \-7 [R2]
-    ##             \-6 :: EP300
-    ##              |-4
-    ##              | \-3 [R3]
-    ##              \-5 [R1] :: NF1
     ## 
     ##  Transfer:
     ##         GL ---> MET 
@@ -2631,11 +2631,11 @@ print(phylo$phylogenies)
     ##         \-GL
     ##          \-2 :: MET, TERT
     ##           \-1 [R2] :: RB1, IKZF1, KRAS
-    ##            |-6 :: EP300
-    ##            | |-4
-    ##            | | \-3 [R3]
-    ##            | \-5 [R1] :: NF1
     ##            \-7 [R2]
+    ##             \-6 :: EP300
+    ##              |-4
+    ##              | \-3 [R3]
+    ##              \-5 [R1] :: NF1
     ## 
     ##  Transfer:
     ##         GL ---> MET 
@@ -2653,7 +2653,9 @@ print(phylo$phylogenies)
     ## 
     ##  Score    : 0.0666666666666667
 
-We can also plot the phylogenetic trees for this patient.
+We can also plot the phylogenetic trees for this patient; in this case
+it goes directly to file
+`REVOLVER-report-patient-data-models-CRUK0002.pdf`
 
 ``` r
 plot(phylo, patients = 'CRUK0002')
@@ -2702,20 +2704,257 @@ plot(phylo, patients = 'CRUK0002')
     ##   - PDF delete input files = TRUE
 
 **Output file:**
-[“CRUK0002.pdf”](./CRUK0002.pdf)
-
-<!-- ## Analysis, fitting the models -->
-
-<!-- <!-- In the current release we make available an S3 object that contains the pre-computed phylogenies for the TRACERx cohort. -->
-
-–\> <!-- <!-- ```{r} --> –\> <!-- <!-- data(TRACERx.cohort) --> –\>
-<!-- <!-- print(TRACERx.cohort) --> –\> <!-- <!-- ``` -->
-–\>
-
-<!-- We have computed offline the phylogenetic trees for this cohort with the above parameters -->
+[“REVOLVER-report-patient-data-models-CRUK0002.pdf”](./https://github.com/caravagn/revolver.misc/blob/master/vignette_TRACERx_Hanjani_et_al/REVOLVER-report-patient-data-models-CRUK0002.pdf)
 
 Once the analysis has been carried out, one can assess confidence of the
-estimates with the jackknife; see the CRC vignette attached to REVOLVER
-for an example. We suggest running these analyses on a cluster machine
-to speed up the computation (on a 40-core machines jackknife analysis
+estimates with the jackknife; [see the other
+vignettes](https://github.com/caravagn/revolver/wiki/7.-Vignettes/) for
+an example. We suggest running these analyses on a cluster machine to
+speed up the computation (on a 40-core machines jackknife analysis
 requires ~30 minutes exploiting 90% of the available cores in parallel).
+
+## Pre-computed results made available
+
+The results from the computation of the jacckknife are available in an
+RData object (~100MB) that you can download from this repository:
+
+  - [TRACERx-jackknife.RData](TRACERx-jackknife.RData)
+
+<!-- end list -->
+
+``` r
+load('TRACERx-jackknife.RData', verbose = TRUE)
+```
+
+    ## Loading objects:
+    ##   cohort
+
+``` r
+cohort
+```
+
+    ##  [ REVOLVER  "Haggis and tatties" ] 
+    ## 
+    ##   TRACERx cohort -- driver events in SNVs and CNAs merged 
+    ## 
+    ##   Patient IDs     : CRUK0001,  CRUK0002,  CRUK0003,  CRUK0004,  CRUK0005,  CRUK0006,  ...
+    ##   Cohort size     : 99 patients, 65421 alterations, 79 drivers
+    ##   Drivers         : NF1,  ARHGAP35,  TP53,  MGA,  WRN,  EGFR,  ... 
+    ## 
+    ##  ----------------------
+    ##  Computations available
+    ##  ----------------------
+    ## 
+    ##   Trees per patient    : YES
+    ##   Fit via TL           : YES
+    ##   REVOLVER clustering  : YES
+    ##   Jackknife statistics : YES
+    ## 
+    ##  ---------------------------
+    ##  Summary for data and models
+    ##  ---------------------------
+    ## 
+    ##   CRUK0001 :  k = 200 | t =  11 | n = 11 | r =  3 | m = 2100 | d =  7    [ Fit ]  #   1   | g =    2e-01 | f =  6.5e-05   [ Cluster  C4 ]
+    ##   CRUK0002 :  k =   3 | t =   2 | n =  7 | r =  3 | m =  280 | d =  7    [ Fit ]  #   1   | g =    1e+00 | f =    6e-01   [ Cluster  C1 ]
+    ##   CRUK0003 :  k =   1 | t =   1 | n =  7 | r =  5 | m =  330 | d =  4    [ Fit ]  #   1   | g =    8e-01 | f =    8e-01   [ Cluster  C6 ]
+    ##   CRUK0004 :  k =  18 | t =   1 | n =  7 | r =  4 | m =  323 | d =  4    [ Fit ]  #   1   | g =  2.5e-01 | f =    2e-02   [ Cluster  C4 ]
+    ##   CRUK0005 :  k = 200 | t =   1 | n = 10 | r =  4 | m = 1582 | d =  6    [ Fit ]  #   1   | g =  1.4e-01 | f =  1.3e-04   [ Cluster  C2 ]
+    ##   CRUK0006 :  k = 200 | t =   3 | n =  7 | r =  2 | m = 1856 | d =  6    [ Fit ]  #   1   | g =    5e-01 | f =  3.5e-04   [ Cluster  C2 ]
+    ##   CRUK0007 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  109 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C6 ]
+    ##   CRUK0008 :  k =   1 | t =   1 | n =  4 | r =  2 | m =  365 | d =  6    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster C10 ]
+    ##   CRUK0009 :  k =  55 | t =   1 | n = 10 | r =  4 | m =  487 | d =  7    [ Fit ]  #   1   | g =    5e-01 | f =  6.2e-03   [ Cluster  C2 ]
+    ##   CRUK0010 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  141 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C6 ]
+    ##   CRUK0011 :  k =  30 | t =   1 | n =  9 | r =  3 | m =  672 | d =  2    [ Fit ]  #   1   | g =  6.7e-01 | f =  2.5e-02   [ Cluster  C3 ]
+    ##   CRUK0012 :  k =   2 | t =   1 | n =  5 | r =  2 | m =  163 | d =  1    [ Fit ]  #   1   | g =    5e-01 | f =  2.5e-01   [ Cluster  C6 ]
+    ##   CRUK0013 :  k =   4 | t =   4 | n =  5 | r =  5 | m =  207 | d =  4    [ Fit ]  #   1   | g =  6.4e-01 | f =  2.4e-01   [ Cluster  C1 ]
+    ##   CRUK0014 :  k =   1 | t =   1 | n =  3 | r =  2 | m =   71 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C9 ]
+    ##   CRUK0015 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  124 | d =  4    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C4 ]
+    ##   CRUK0016 :  k =  56 | t =  14 | n = 13 | r =  2 | m = 2051 | d = 11    [ Fit ]  #   4   | g =  6.2e-02 | f =  3.3e-04   [ Cluster  C5 ]
+    ##   CRUK0017 :  k = 200 | t =   1 | n = 11 | r =  4 | m = 1256 | d =  6    [ Fit ]  #   1   | g =  2.1e-01 | f =  5.5e-04   [ Cluster  C2 ]
+    ##   CRUK0018 :  k =  10 | t =   1 | n =  9 | r =  4 | m =  653 | d =  4    [ Fit ]  #   1   | g =  5.6e-01 | f =  4.7e-02   [ Cluster  C3 ]
+    ##   CRUK0019 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  110 | d =  1    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C6 ]
+    ##   CRUK0020 :  k =  11 | t =   2 | n =  6 | r =  2 | m = 3378 | d = 10    [ Fit ]  #   8   | g =  2.5e-01 | f =  6.9e-03   [ Cluster  C9 ]
+    ##   CRUK0021 :  k =   4 | t =   1 | n =  5 | r =  2 | m =  221 | d =  4    [ Fit ]  #   1   | g =    5e-01 | f =  1.2e-01   [ Cluster  C4 ]
+    ##   CRUK0022 :  k =   2 | t =   1 | n =  3 | r =  2 | m =  262 | d =  3    [ Fit ]  #   1   | g =    5e-01 | f =  2.5e-01   [ Cluster  C4 ]
+    ##   CRUK0023 :  k =   2 | t =   2 | n =  8 | r =  4 | m =  364 | d =  6    [ Fit ]  #   1   | g =  5.6e-01 | f =  2.8e-01   [ Cluster  C3 ]
+    ##   CRUK0024 :  k =  36 | t =   2 | n = 10 | r =  4 | m =  926 | d =  6    [ Fit ]  #   1   | g =    5e-01 | f =  1.5e-02   [ Cluster  C1 ]
+    ##   CRUK0025 :  k =   2 | t =   1 | n =  6 | r =  3 | m =  532 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =  6.7e-01   [ Cluster  C9 ]
+    ##   CRUK0026 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  157 | d =  4    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C4 ]
+    ##   CRUK0027 :  k =  25 | t =   1 | n =  6 | r =  2 | m =  990 | d =  3    [ Fit ]  #   1   | g =    5e-01 | f =  7.8e-03   [ Cluster  C9 ]
+    ##   CRUK0028 :  k =   1 | t =   1 | n =  1 | r =  2 | m =   74 | d =  2    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C6 ]
+    ##   CRUK0029 :  k =  24 | t =   1 | n =  6 | r =  6 | m =  399 | d =  4    [ Fit ]  #   1   | g =  5.8e-01 | f =  3.1e-02   [ Cluster  C2 ]
+    ##   CRUK0030 :  k =   1 | t =   1 | n =  3 | r =  3 | m =  268 | d =  6    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C9 ]
+    ##   CRUK0031 :  k = 200 | t =   1 | n =  8 | r =  3 | m =  907 | d =  5    [ Fit ]  #   1   | g =  4.4e-01 | f =  7.7e-04   [ Cluster  C5 ]
+    ##   CRUK0032 :  k =   4 | t =   1 | n = 11 | r =  4 | m = 1170 | d =  6    [ Fit ]  #   1   | g =  7.5e-01 | f =  1.2e-01   [ Cluster  C1 ]
+    ##   CRUK0033 :  k =   1 | t =   1 | n =  1 | r =  2 | m =   49 | d =  2    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster C10 ]
+    ##   CRUK0034 :  k =   1 | t =   1 | n =  7 | r =  3 | m =  938 | d =  4    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C3 ]
+    ##   CRUK0035 :  k =   1 | t =   1 | n =  5 | r =  4 | m =  227 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C2 ]
+    ##   CRUK0036 :  k =   1 | t =   1 | n =  2 | r =  4 | m =  212 | d =  5    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster C10 ]
+    ##   CRUK0037 :  k =  12 | t =   1 | n =  7 | r =  5 | m =  479 | d =  3    [ Fit ]  #   1   | g =    8e-01 | f =  8.5e-02   [ Cluster  C3 ]
+    ##   CRUK0038 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  135 | d =  2    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C3 ]
+    ##   CRUK0039 :  k = 200 | t =   1 | n =  9 | r =  3 | m = 1330 | d =  4    [ Fit ]  #   1   | g =  6.7e-01 | f =  6.6e-04   [ Cluster  C3 ]
+    ##   CRUK0040 :  k =   1 | t =   1 | n =  2 | r =  2 | m =  358 | d =  4    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C3 ]
+    ##   CRUK0041 :  k =   1 | t =   1 | n =  3 | r =  4 | m =  248 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C6 ]
+    ##   CRUK0042 :  k =   1 | t =   1 | n =  1 | r =  1 | m =   77 | d =  1    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C3 ]
+    ##   CRUK0043 :  k =   1 | t =   1 | n =  2 | r =  2 | m =   96 | d =  1    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0044 :  k =   4 | t =   1 | n =  4 | r =  2 | m =  462 | d =  1    [ Fit ]  #   1   | g =    5e-01 | f =  8.3e-02   [ Cluster  C3 ]
+    ##   CRUK0045 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  171 | d =  1    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0046 :  k =   1 | t =   1 | n =  1 | r =  4 | m =  187 | d =  2    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster C10 ]
+    ##   CRUK0047 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  281 | d =  4    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0048 :  k =   2 | t =   1 | n =  3 | r =  3 | m =  461 | d =  7    [ Fit ]  #   1   | g =  6.7e-01 | f =  4.4e-01   [ Cluster  C4 ]
+    ##   CRUK0049 :  k =  10 | t =   1 | n =  5 | r =  2 | m =  950 | d =  5    [ Fit ]  #   1   | g =    5e-01 | f =  4.2e-02   [ Cluster C11 ]
+    ##   CRUK0050 :  k =   1 | t =   1 | n =  1 | r =  5 | m =  181 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0051 :  k =   1 | t =   1 | n =  4 | r =  3 | m =  655 | d =  5    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster C11 ]
+    ##   CRUK0052 :  k =   2 | t =   1 | n =  6 | r =  3 | m = 1390 | d =  9    [ Fit ]  #   1   | g =  6.7e-01 | f =  3.3e-01   [ Cluster  C9 ]
+    ##   CRUK0054 :  k =   1 | t =   1 | n =  1 | r =  2 | m =  187 | d =  1    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C6 ]
+    ##   CRUK0055 :  k =   1 | t =   1 | n =  2 | r =  1 | m = 1859 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0056 :  k =   3 | t =   1 | n =  3 | r =  3 | m =  383 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =  3.3e-01   [ Cluster  C1 ]
+    ##   CRUK0057 :  k =   2 | t =   1 | n =  4 | r =  2 | m = 1165 | d =  5    [ Fit ]  #   1   | g =    5e-01 | f =  2.5e-01   [ Cluster  C1 ]
+    ##   CRUK0058 :  k =   1 | t =   1 | n =  1 | r =  2 | m =  134 | d =  2    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C4 ]
+    ##   CRUK0059 :  k =   1 | t =   1 | n =  1 | r =  2 | m =   61 | d =  1    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C3 ]
+    ##   CRUK0060 :  k =   1 | t =   1 | n =  1 | r =  1 | m = 2327 | d = 11    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0061 :  k =   1 | t =   1 | n =  1 | r =  2 | m =  286 | d =  1    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0062 :  k = 200 | t =   2 | n = 18 | r =  7 | m = 1145 | d =  7    [ Fit ]  #   1   | g =  1.1e-01 | f =  4.3e-07   [ Cluster  C7 ]
+    ##   CRUK0063 :  k = 150 | t =   6 | n =  7 | r =  5 | m =  533 | d = 11    [ Fit ]  #  11   | g =  1.6e-01 | f =    2e-03   [ Cluster  C8 ]
+    ##   CRUK0064 :  k =   4 | t =   1 | n =  5 | r =  2 | m =  730 | d =  3    [ Fit ]  #   1   | g =    5e-01 | f =  1.1e-01   [ Cluster  C2 ]
+    ##   CRUK0065 :  k = 200 | t =   1 | n = 19 | r =  6 | m = 1139 | d =  9    [ Fit ]  #   1   | g =  2.9e-02 | f =  3.2e-09   [ Cluster  C7 ]
+    ##   CRUK0066 :  k = 200 | t =   1 | n =  9 | r =  4 | m =  579 | d =  8    [ Fit ]  #   1   | g =  4.2e-01 | f =  2.6e-03   [ Cluster  C5 ]
+    ##   CRUK0067 :  k =   2 | t =   1 | n =  5 | r =  2 | m =  455 | d =  6    [ Fit ]  #   1   | g =    5e-01 | f =  2.5e-01   [ Cluster  C8 ]
+    ##   CRUK0068 :  k =  32 | t =   1 | n = 11 | r =  4 | m =  936 | d =  8    [ Fit ]  #   1   | g =  7.5e-01 | f =  4.2e-02   [ Cluster  C7 ]
+    ##   CRUK0069 :  k = 200 | t =   1 | n = 14 | r =  5 | m =  958 | d =  5    [ Fit ]  #   1   | g =  1.5e-01 | f =  3.5e-04   [ Cluster  C2 ]
+    ##   CRUK0070 :  k =   1 | t =   1 | n =  8 | r =  5 | m =  412 | d =  6    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C2 ]
+    ##   CRUK0071 :  k =   6 | t =   1 | n =  9 | r =  6 | m =  645 | d =  4    [ Fit ]  #   1   | g =  8.3e-01 | f =  3.1e-01   [ Cluster  C8 ]
+    ##   CRUK0072 :  k =   2 | t =   1 | n =  4 | r =  3 | m =  431 | d =  6    [ Fit ]  #   1   | g =  6.7e-01 | f =  4.4e-01   [ Cluster  C8 ]
+    ##   CRUK0073 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  473 | d =  9    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C5 ]
+    ##   CRUK0074 :  k =   8 | t =   1 | n =  5 | r =  2 | m = 1080 | d =  6    [ Fit ]  #   1   | g =    1e+00 | f =  6.2e-02   [ Cluster  C7 ]
+    ##   CRUK0075 :  k =   3 | t =   1 | n =  4 | r =  2 | m = 1004 | d =  8    [ Fit ]  #   1   | g =    1e+00 | f =  2.5e-01   [ Cluster  C8 ]
+    ##   CRUK0076 :  k =   8 | t =   1 | n =  8 | r =  4 | m = 1109 | d =  8    [ Fit ]  #   1   | g =  5.6e-01 | f =  6.2e-02   [ Cluster  C7 ]
+    ##   CRUK0077 :  k =   4 | t =   1 | n =  7 | r =  4 | m =  690 | d =  3    [ Fit ]  #   1   | g =  5.6e-01 | f =  1.4e-01   [ Cluster  C2 ]
+    ##   CRUK0078 :  k =  17 | t =   1 | n =  5 | r =  3 | m =  371 | d =  5    [ Fit ]  #   1   | g =  6.7e-01 | f =  3.7e-02   [ Cluster  C8 ]
+    ##   CRUK0079 :  k =   2 | t =   1 | n =  5 | r =  4 | m =  590 | d =  6    [ Fit ]  #   1   | g =    1e+00 | f =    8e-01   [ Cluster  C7 ]
+    ##   CRUK0080 :  k =   1 | t =   1 | n =  3 | r =  4 | m =  339 | d =  5    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C4 ]
+    ##   CRUK0081 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  713 | d =  6    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C5 ]
+    ##   CRUK0082 :  k =   7 | t =   1 | n =  4 | r =  5 | m =  507 | d =  8    [ Fit ]  #   1   | g =    6e-01 | f =  1.5e-01   [ Cluster  C7 ]
+    ##   CRUK0083 :  k =  32 | t =   1 | n =  7 | r =  4 | m = 1038 | d =  7    [ Fit ]  #   1   | g =    1e+00 | f =  3.7e-02   [ Cluster  C8 ]
+    ##   CRUK0084 :  k =   1 | t =   1 | n =  1 | r =  4 | m =  332 | d =  1    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0085 :  k =   1 | t =   1 | n =  6 | r =  4 | m = 1462 | d =  4    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0086 :  k =   1 | t =   1 | n =  1 | r =  3 | m =  586 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C2 ]
+    ##   CRUK0087 :  k =   1 | t =   1 | n =  2 | r =  3 | m =  557 | d =  4    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C7 ]
+    ##   CRUK0088 :  k =   1 | t =   1 | n =  2 | r =  2 | m =  575 | d =  2    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C2 ]
+    ##   CRUK0089 :  k =   1 | t =   1 | n =  1 | r =  1 | m =  974 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster C10 ]
+    ##   CRUK0090 :  k =   1 | t =   1 | n =  1 | r =  2 | m = 1233 | d =  5    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C5 ]
+    ##   CRUK0091 :  k =   1 | t =   1 | n =  1 | r =  1 | m =  818 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C5 ]
+    ##   CRUK0092 :  k =   1 | t =   1 | n =  1 | r =  1 | m =  249 | d =  5    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0093 :  k =   1 | t =   1 | n =  2 | r =  1 | m = 1505 | d =  7    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C5 ]
+    ##   CRUK0094 :  k =   1 | t =   1 | n =  3 | r =  4 | m =   77 | d =  2    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0095 :  k =   1 | t =   1 | n =  2 | r =  3 | m =  229 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C1 ]
+    ##   CRUK0096 :  k =   1 | t =   1 | n =  1 | r =  7 | m =  453 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C3 ]
+    ##   CRUK0097 :  k =   1 | t =   1 | n =  3 | r =  2 | m =  520 | d =  2    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C2 ]
+    ##   CRUK0098 :  k =   1 | t =   1 | n =  4 | r =  3 | m =  865 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C2 ]
+    ##   CRUK0099 :  k =   1 | t =   1 | n =  2 | r =  4 | m =  450 | d =  3    [ Fit ]  #   1   | g =    1e+00 | f =    1e+00   [ Cluster  C2 ]
+    ##   CRUK0100 :  k =   3 | t =   1 | n =  5 | r =  3 | m =  842 | d =  6    [ Fit ]  #   1   | g =    1e+00 | f =  4.4e-01   [ Cluster  C5 ]
+    ## 
+    ##  Legend 
+    ##       k : phylogenies  
+    ##       t : combinations of information transfer 
+    ##       n : groups (nodes of the tree) 
+    ##       r : regions (inputs per patient) 
+    ##       m : number of alterations 
+    ##       d : number of driver alterations
+    ##       # : number of the solution selection (out of k)  
+    ##       g : goodness-of-fit 
+    ##       f : score of the model
+    ## 
+    ##  --------------------
+    ##  Summary for clusters
+    ##  --------------------
+    ## 
+    ##     C4 :  n =   18 | jackknife = 0.8015
+    ##     C6 :  n =    5 | jackknife = 0.7910
+    ##     C1 :  n =    2 | jackknife = 0.6040
+    ##    C10 :  n =   15 | jackknife = 0.3860
+    ##     C3 :  n =   12 | jackknife = 0.8050
+    ##     C5 :  n =    9 | jackknife = 0.7195
+    ##     C2 :  n =    9 | jackknife = 0.7970
+    ##     C9 :  n =    8 | jackknife = 0.8060
+    ##    C11 :  n =    8 | jackknife = 0.7860
+    ##     C7 :  n =    7 | jackknife = 0.8005
+    ##     C8 :  n =    6 | jackknife = 0.6390
+    ## 
+    ##  Legend 
+    ##               n : number of patients in the cluster
+    ##       jackknife : median co-clustering probability estiamted with jackknife
+    ## 
+    ## 
+    ##  CHECK  Patients with 1 drivers can only be expanded: CRUK0012, CRUK0019, CRUK0042, CRUK0043, CRUK0044, CRUK0045, CRUK0054, CRUK0059, CRUK0061, CRUK0084
+
+Just verify that they are the same
+
+``` r
+suppressWarnings(
+  revolver_plt_rclusters(cohort)
+)
+```
+
+    ##  [ REVOLVER Plot: REVOLVER Cluster table with features table ] 
+    ##   Cutoff to annotate features (min. observations) = 2  
+    ##   Output file =  N/A   
+    ## Features that will be annotated [ use.GL = TRUE ] 
+    ##       from        to         edge count
+    ## 35      GL      TP53      GL~TP53    31
+    ## 9       GL      EGFR      GL~EGFR    20
+    ## 20      GL    PIK3CA    GL~PIK3CA    20
+    ## 72      GL      KRAS      GL~KRAS    20
+    ## 22      GL    CDKN2A    GL~CDKN2A    14
+    ## 349     GL      SOX2      GL~SOX2    14
+    ## 5     EGFR      TP53    EGFR~TP53    13
+    ## 43      GL     KEAP1     GL~KEAP1    12
+    ## 101 CDKN2A      TP53  CDKN2A~TP53    10
+    ## 80    KRAS      TP53    KRAS~TP53     9
+    ## 201     GL     FGFR1     GL~FGFR1     9
+    ## 53      GL     STK11     GL~STK11     8
+    ## 56      GL       MYC       GL~MYC     8
+    ## 78    TP53      KRAS    TP53~KRAS     8
+    ## 90    TP53      FAT1    TP53~FAT1     7
+    ## 7       GL       MGA       GL~MGA     6
+    ## 315     GL     RASA1     GL~RASA1     6
+    ## 24    TP53    NOTCH1  TP53~NOTCH1     5
+    ## 29    TP53      TERT    TP53~TERT     5
+    ## 58    TP53    NFE2L2  TP53~NFE2L2     5
+    ## 139     GL    COL2A1    GL~COL2A1     5
+    ## 191     GL       NF1       GL~NF1     5
+    ## 313  RASA1      TP53   RASA1~TP53     5
+    ## 418     GL      PTEN      GL~PTEN     5
+    ## 33      GL     CMTR2     GL~CMTR2     4
+    ## 34      GL      BRAF      GL~BRAF     4
+    ## 116   KRAS       MGA     KRAS~MGA     4
+    ## 153   TP53     KMT2D   TP53~KMT2D     4
+    ## 180     GL       APC       GL~APC     4
+    ## 184     GL     CCND1     GL~CCND1     4
+    ## 190     GL     FBXW7     GL~FBXW7     4
+    ## 229     GL    CREBBP    GL~CREBBP     4
+    ## 340 PIK3CA      UBR5  PIK3CA~UBR5     4
+    ## 342   SOX2      UBR5    SOX2~UBR5     4
+    ## 431   TP53    COL5A2  TP53~COL5A2     4
+    ## 4      WRN      TP53     WRN~TP53     3
+    ## 8       GL       WRN       GL~WRN     3
+    ## 13    TERT      KRAS    TERT~KRAS     3
+    ## 16      GL       MET       GL~MET     3
+    ## 46      GL    SGK223    GL~SGK223     3
+    ## 47   KEAP1     ARID2  KEAP1~ARID2     3
+    ## 55      GL     U2AF1     GL~U2AF1     3
+    ## 64      GL  ARHGAP35  GL~ARHGAP35     3
+    ## 70      GL      TERT      GL~TERT     3
+    ## 75   STK11      KRAS   STK11~KRAS     3
+    ## 87    EGFR       RB1     EGFR~RB1     3
+    ## 138     GL     ARID2     GL~ARID2     3
+    ## 140     GL      PRF1      GL~PRF1     3
+    ## 172     GL SERPINB13 GL~SERPINB13     3
+    ## 228     GL     NCOA6     GL~NCOA6     3
+    ## 236     GL    PHOX2B    GL~PHOX2B     3
+    ## 295   TP53      UBR5    TP53~UBR5     3
+    ## 301     GL    NOTCH2    GL~NOTCH2     3
+    ## 311     GL     FANCM     GL~FANCM     3
+    ## 318     GL   SMARCA4   GL~SMARCA4     3
+
+![](vignette_TRACERx_Hanjani_et_al_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
