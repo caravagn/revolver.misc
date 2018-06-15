@@ -1497,7 +1497,7 @@ plot(fit, cex = 2.5, merge.files = TRUE)
     ##   - PDF delete input files = TRUE  
     ##  [ REVOLVER jamPDF to REVOLVER-report-fit-all-cohort-merged.pdf ] 
     ##   - Input files = REVOLVER-report-fit-patient-adenoma_1.pdf, REVOLVER-report-fit-patient-adenoma_2.pdf, REVOLVER-report-fit-patient-adenoma_3.pdf, REVOLVER-report-fit-patient-adenoma_4.pdf, REVOLVER-report-fit-patient-adenoma_5.pdf, REVOLVER-report-fit-patient-adenoma_6.pdf, REVOLVER-report-fit-patient-adenoma_7.pdf, REVOLVER-report-fit-patient-adenoma_8.pdf, REVOLVER-report-fit-patient-adenoma_9.pdf, REVOLVER-report-fit-patient-carcinoma_1.pdf, REVOLVER-report-fit-patient-carcinoma_10.pdf, REVOLVER-report-fit-patient-carcinoma_2.pdf, REVOLVER-report-fit-patient-carcinoma_3.pdf, REVOLVER-report-fit-patient-carcinoma_5.pdf, REVOLVER-report-fit-patient-carcinoma_6.pdf, REVOLVER-report-fit-patient-carcinoma_7.pdf, REVOLVER-report-fit-patient-carcinoma_8.pdf, REVOLVER-report-fit-patient-carcinoma_9_distal.pdf, REVOLVER-report-fit-patient-carcinoma_9_proximal.pdf  
-    ##   - PDF layout = 3x3  
+    ##   - PDF layout = 1x1  
     ##   - PDF page type = none  
     ##   - PDF crop white margins = TRUE  
     ##   - PDF delete input files = FALSE
@@ -1808,25 +1808,25 @@ fit =  revolver_jackknife(fit, resamples = 50, leave.out = 0.1)
     ## # A tibble: 19 x 19
     ##    adenoma_1 adenoma_2 adenoma_3 adenoma_4 adenoma_5 adenoma_6 adenoma_7
     ##        <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
-    ##  1         0         0         0         0        40         0        42
-    ##  2         0         0         8         8         0        18         0
-    ##  3         0         8         0        41         0        30         0
-    ##  4         0         8        41         0         0        34         0
-    ##  5        40         0         0         0         0         0        41
-    ##  6         0        18        30        34         0         0         0
-    ##  7        42         0         0         0        41         0         0
-    ##  8         0         8        41        43         0        34         0
-    ##  9        37         0         0         0        35         0        39
-    ## 10         0        26         0         0         0         0         0
-    ## 11        39         0         0         0        37         0        40
-    ## 12        40         0         0         0        39         0        42
-    ## 13        43         0         0         0        42         0        45
-    ## 14         0        27         0         0         0         0         0
-    ## 15         0         4        37        40         0        29         0
-    ## 16         0        39         9         9         0        19         0
-    ## 17         0        25         0         0         0         0         0
-    ## 18         0        20         0         0         0         0         0
-    ## 19         0        27         0         0         0         0         0
+    ##  1         0         0         0         0        39         1        41
+    ##  2         0         0         3         3         0        15         0
+    ##  3         0         3         0        40         0        26         0
+    ##  4         0         3        40         0         0        29         0
+    ##  5        39         0         0         0         0         1        38
+    ##  6         1        15        26        29         1         0         1
+    ##  7        41         0         0         0        38         1         0
+    ##  8         0         3        40        37         0        25         0
+    ##  9        42         0         0         0        38         1        40
+    ## 10         0        32         0         0         0         1         0
+    ## 11        36         0         0         0        34         1        36
+    ## 12        40         0         0         0        38         1        39
+    ## 13        41         0         0         0        39         1        41
+    ## 14         0        33         0         0         0         1         0
+    ## 15         0         3        44        41         0        27         0
+    ## 16         0        43         4         4         0        15         0
+    ## 17         0        33         0         0         0         1         0
+    ## 18         0        31         0         0         0         1         0
+    ## 19         0        28         0         0         0         1         0
     ## # ... with 12 more variables: adenoma_8 <dbl>, adenoma_9 <dbl>,
     ## #   carcinoma_1 <dbl>, carcinoma_10 <dbl>, carcinoma_2 <dbl>,
     ## #   carcinoma_3 <dbl>, carcinoma_5 <dbl>, carcinoma_6 <dbl>,
@@ -1837,24 +1837,24 @@ fit =  revolver_jackknife(fit, resamples = 50, leave.out = 0.1)
     ## Median per cluster
     ## ------------------
     ##   C2   C1   C3 
-    ## 0.80 0.70 0.76 
+    ## 0.78 0.72 0.76 
     ## 
     ## -------------------------------
     ## Edge frequency across resamples
     ## -------------------------------
     ## # A tibble: 21 x 3
-    ##    from   to     count
-    ##  * <chr>  <chr>  <dbl>
-    ##  1 GL     APC     1   
-    ##  2 GL     TCF7L2  1   
-    ##  3 GL     FBXW7   0.98
-    ##  4 APC    KMT2C   0.94
-    ##  5 TCF7L2 KMT2C   0.94
-    ##  6 KRAS   KMT2C   0.94
-    ##  7 APC    KRAS    0.9 
-    ##  8 APC    TP53    0.9 
-    ##  9 APC    PIK3CA  0.88
-    ## 10 FBXW7  PIK3CA  0.88
+    ##    from  to     count
+    ##  * <chr> <chr>  <dbl>
+    ##  1 GL    APC     1   
+    ##  2 GL    FBXW7   1   
+    ##  3 GL    TCF7L2  0.98
+    ##  4 APC   KRAS    0.94
+    ##  5 APC   TP53    0.94
+    ##  6 APC   PIK3CA  0.92
+    ##  7 FBXW7 PIK3CA  0.92
+    ##  8 KRAS  PIK3CA  0.92
+    ##  9 KMT2C PIK3CA  0.92
+    ## 10 KRAS  KMT2C   0.88
     ## # ... with 11 more rows
 
 Then, we can plot the jackknife statistics; we begin with the
@@ -1874,25 +1874,25 @@ revolver_plt_jackknife_coclust(fit, cutoff.annotate.numbers = .6)
     ## # A tibble: 19 x 19
     ##    adenoma_1 adenoma_2 adenoma_3 adenoma_4 adenoma_5 adenoma_6 adenoma_7
     ##        <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
-    ##  1      0         0         0         0         0.8      0          0.84
-    ##  2      0         0         0.16      0.16      0        0.36       0   
-    ##  3      0         0.16      0         0.82      0        0.6        0   
-    ##  4      0         0.16      0.82      0         0        0.68       0   
-    ##  5      0.8       0         0         0         0        0          0.82
-    ##  6      0         0.36      0.6       0.68      0        0          0   
-    ##  7      0.84      0         0         0         0.82     0          0   
-    ##  8      0         0.16      0.82      0.86      0        0.68       0   
-    ##  9      0.74      0         0         0         0.7      0          0.78
-    ## 10      0         0.52      0         0         0        0          0   
-    ## 11      0.78      0         0         0         0.74     0          0.8 
-    ## 12      0.8       0         0         0         0.78     0          0.84
-    ## 13      0.86      0         0         0         0.84     0          0.9 
-    ## 14      0         0.54      0         0         0        0          0   
-    ## 15      0         0.08      0.74      0.8       0        0.580      0   
-    ## 16      0         0.78      0.18      0.18      0        0.38       0   
-    ## 17      0         0.5       0         0         0        0          0   
-    ## 18      0         0.4       0         0         0        0          0   
-    ## 19      0         0.54      0         0         0        0          0   
+    ##  1      0         0         0        0          0.78     0.02       0.82
+    ##  2      0         0         0.06     0.06       0        0.3        0   
+    ##  3      0         0.06      0        0.8        0        0.52       0   
+    ##  4      0         0.06      0.8      0          0        0.580      0   
+    ##  5      0.78      0         0        0          0        0.02       0.76
+    ##  6      0.02      0.3       0.52     0.580      0.02     0          0.02
+    ##  7      0.82      0         0        0          0.76     0.02       0   
+    ##  8      0         0.06      0.8      0.74       0        0.5        0   
+    ##  9      0.84      0         0        0          0.76     0.02       0.8 
+    ## 10      0         0.64      0        0          0        0.02       0   
+    ## 11      0.72      0         0        0          0.68     0.02       0.72
+    ## 12      0.8       0         0        0          0.76     0.02       0.78
+    ## 13      0.82      0         0        0          0.78     0.02       0.82
+    ## 14      0         0.66      0        0          0        0.02       0   
+    ## 15      0         0.06      0.88     0.82       0        0.54       0   
+    ## 16      0         0.86      0.08     0.08       0        0.3        0   
+    ## 17      0         0.66      0        0          0        0.02       0   
+    ## 18      0         0.62      0        0          0        0.02       0   
+    ## 19      0         0.56      0        0          0        0.02       0   
     ## # ... with 12 more variables: adenoma_8 <dbl>, adenoma_9 <dbl>,
     ## #   carcinoma_1 <dbl>, carcinoma_10 <dbl>, carcinoma_2 <dbl>,
     ## #   carcinoma_3 <dbl>, carcinoma_5 <dbl>, carcinoma_6 <dbl>,
@@ -1917,8 +1917,8 @@ revolver_plt_jackknife_coclust_bplot(fit)
     ## # A tibble: 3 x 2
     ##   entry value
     ## * <chr> <dbl>
-    ## 1 C2     0.8 
-    ## 2 C1     0.7 
+    ## 1 C2     0.78
+    ## 2 C1     0.72
     ## 3 C3     0.76
 
 ![](vignette_CRC_Cross_et_al_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
@@ -1942,25 +1942,25 @@ revolver_plt_jackknife_edge_prb(fit)
     ## # A tibble: 19 x 19
     ##    adenoma_1 adenoma_2 adenoma_3 adenoma_4 adenoma_5 adenoma_6 adenoma_7
     ##        <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
-    ##  1      0         0         0         0         0.8      0          0.84
-    ##  2      0         0         0.16      0.16      0        0.36       0   
-    ##  3      0         0.16      0         0.82      0        0.6        0   
-    ##  4      0         0.16      0.82      0         0        0.68       0   
-    ##  5      0.8       0         0         0         0        0          0.82
-    ##  6      0         0.36      0.6       0.68      0        0          0   
-    ##  7      0.84      0         0         0         0.82     0          0   
-    ##  8      0         0.16      0.82      0.86      0        0.68       0   
-    ##  9      0.74      0         0         0         0.7      0          0.78
-    ## 10      0         0.52      0         0         0        0          0   
-    ## 11      0.78      0         0         0         0.74     0          0.8 
-    ## 12      0.8       0         0         0         0.78     0          0.84
-    ## 13      0.86      0         0         0         0.84     0          0.9 
-    ## 14      0         0.54      0         0         0        0          0   
-    ## 15      0         0.08      0.74      0.8       0        0.580      0   
-    ## 16      0         0.78      0.18      0.18      0        0.38       0   
-    ## 17      0         0.5       0         0         0        0          0   
-    ## 18      0         0.4       0         0         0        0          0   
-    ## 19      0         0.54      0         0         0        0          0   
+    ##  1      0         0         0        0          0.78     0.02       0.82
+    ##  2      0         0         0.06     0.06       0        0.3        0   
+    ##  3      0         0.06      0        0.8        0        0.52       0   
+    ##  4      0         0.06      0.8      0          0        0.580      0   
+    ##  5      0.78      0         0        0          0        0.02       0.76
+    ##  6      0.02      0.3       0.52     0.580      0.02     0          0.02
+    ##  7      0.82      0         0        0          0.76     0.02       0   
+    ##  8      0         0.06      0.8      0.74       0        0.5        0   
+    ##  9      0.84      0         0        0          0.76     0.02       0.8 
+    ## 10      0         0.64      0        0          0        0.02       0   
+    ## 11      0.72      0         0        0          0.68     0.02       0.72
+    ## 12      0.8       0         0        0          0.76     0.02       0.78
+    ## 13      0.82      0         0        0          0.78     0.02       0.82
+    ## 14      0         0.66      0        0          0        0.02       0   
+    ## 15      0         0.06      0.88     0.82       0        0.54       0   
+    ## 16      0         0.86      0.08     0.08       0        0.3        0   
+    ## 17      0         0.66      0        0          0        0.02       0   
+    ## 18      0         0.62      0        0          0        0.02       0   
+    ## 19      0         0.56      0        0          0        0.02       0   
     ## # ... with 12 more variables: adenoma_8 <dbl>, adenoma_9 <dbl>,
     ## #   carcinoma_1 <dbl>, carcinoma_10 <dbl>, carcinoma_2 <dbl>,
     ## #   carcinoma_3 <dbl>, carcinoma_5 <dbl>, carcinoma_6 <dbl>,
@@ -1989,7 +1989,7 @@ revolver_plt_jackknife_edge_counts(fit)
     ##  2 APC   KRAS  APC~KRAS     7
     ##  3 APC   TP53  APC~TP53     6
     ##  4 GL    APC   GL~APC      17
-    ##  5 APC   KRAS  APC~KRAS     6
+    ##  5 APC   KRAS  APC~KRAS     7
     ##  6 APC   TP53  APC~TP53     6
     ##  7 GL    APC   GL~APC      17
     ##  8 APC   KRAS  APC~KRAS     6
