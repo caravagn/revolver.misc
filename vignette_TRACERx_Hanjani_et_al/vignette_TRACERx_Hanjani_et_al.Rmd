@@ -390,7 +390,7 @@ cohort
 
 Just verify that they are the same
 
-```{r, fig.width = 25, fig.height= 25}
+```{r, fig.width = 35, fig.height= 25}
 suppressWarnings(
   revolver_plt_rclusters(cohort)
 )

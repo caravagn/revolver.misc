@@ -2598,11 +2598,11 @@ print(phylo$phylogenies)
     ##         \-GL
     ##          \-2 :: MET, TERT
     ##           \-1 [R2] :: RB1, IKZF1, KRAS
-    ##            |-6 :: EP300
-    ##            | |-4
-    ##            | | \-3 [R3]
-    ##            | \-5 [R1] :: NF1
     ##            \-7 [R2]
+    ##             \-6 :: EP300
+    ##              |-4
+    ##              | \-3 [R3]
+    ##              \-5 [R1] :: NF1
     ## 
     ##  Transfer:
     ##         GL ---> MET 
@@ -2631,11 +2631,11 @@ print(phylo$phylogenies)
     ##         \-GL
     ##          \-2 :: MET, TERT
     ##           \-1 [R2] :: RB1, IKZF1, KRAS
+    ##            |-6 :: EP300
+    ##            | |-4
+    ##            | | \-3 [R3]
+    ##            | \-5 [R1] :: NF1
     ##            \-7 [R2]
-    ##             \-6 :: EP300
-    ##              |-4
-    ##              | \-3 [R3]
-    ##              \-5 [R1] :: NF1
     ## 
     ##  Transfer:
     ##         GL ---> MET 
