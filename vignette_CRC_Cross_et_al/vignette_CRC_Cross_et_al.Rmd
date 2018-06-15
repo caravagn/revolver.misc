@@ -192,12 +192,12 @@ fit
 
 You can plot the fit that, by default, will output to PDF files your models. See the manual entry for the S3 class function ``?plot.rev_cohort_fit``. 
 ```{r, eval= TRUE, message=FALSE, fig.height=8, fig.width=8}
-plot(fit)
+plot(fit, cex = 2.5, merge.files = TRUE)
 ```
 
-Notice that for each tree now REVOLVER visualizes also the expanded evolutionary trajectories for driver mutations inside the same node, as well as the information transfer for the model.
+Because we have used ``merge.files`` the PDF files are merged to a unique document named ``REVOLVER-report-fit-all-cohort-merged.pdf``. Notice that for each tree now REVOLVER visualizes also the expanded evolutionary trajectories for driver mutations inside the same node, as well as the information transfer for the model.
 
-**Output file:** ["REVOLVER-cohort.pdf"](./REVOLVER-cohort.pdf) 
+**Output file:** ["REVOLVER-report-fit-all-cohort-merged.pdf"](./REVOLVER-report-fit-all-cohort-merged.pdf) 
 
 
 
