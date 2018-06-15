@@ -1,0 +1,389 @@
+---
+title: "TRACERx analysis with REVOLVER"
+author: "Giulio Caravagna"
+institute: "Institute for Cancer Research"
+date: "June 10, 2018"
+email: "giulio.caravagna@ed.ac.uk"
+output: rmarkdown::github_document
+#output:
+#  prettydoc::html_pretty:
+#    theme: cayman
+#    highlight: github
+---
+
+We present the analysis of the [TRACERx](http://tracerx.co.uk/) lung cancer cohort discussed in the REVOLVER paper. For information about this notebook, write to
+
+* Giulio Caravagna, Institute for Cancer Research, London. Email: giulio.caravagna@ed.ac.uk.
+
+REVOLVER is available as an R package at [Github](https://github.com/caravagn/revolver).
+
+```{r, eval = FALSE}
+devtools::install_github("caravagn/revolver")
+```
+
+## Preliminaries: data preparation, adding Copy Number to SNVs
+
+We first prepared an RData copy of Appendix 2 releases in  [Jamal-Hanjani et al; NEJM 2017](http://www.nejm.org/doi/full/10.1056/NEJMoa1616288) 
+
+
+```{r}
+load('[Data] TRACERx.appendix2.Rdata')
+tibble::as.tibble(data)
+```
+
+We perform some basic data filtering. Because we will need clone deconvolution (carried out through pyClone in the original paper), we remove entries for which NA were produced during that analysis. Then, we subset the data to the entries that are relevant to our analysis. For every SNV, we will use as ``variantID`` the gene ``Hugo_Symbol``; see [REVOLVER Input format](https://github.com/caravagn/revolver/wiki/2.-Input-Format).
+```{r}
+data = data[!is.na(data$PyClonePhyloCluster), ]
+data = data[c(
+  'MutationID',
+  'SampleID',
+  'Hugo_Symbol',
+  'PyClonePhyloCluster',
+  'DriverMut',
+  'PyClonePhyloClonal',
+  'PyClonePhyloCCF'
+)]
+str(data)
+```
+
+Then, we extracted from the phylogenetic trees annotated in the Supplementary Appendix of the paper all the subclonal Copy Number Alterations (CNA)  that have been mapped to pyClone subclones. We selected all CNA at gene-level a resolution that allows us to perform our analysis. The format with which we encoded these events (in this preliminary data-preparation) is simply: ``X:G`` to denote the presence of an amplification in gene ``G`` mapped to clone with ID ``X``. Criteria for calling CNA are described in the main paper.
+
+```{r}
+amp = NULL
+amp[['CRUK0001']] = c('2:CDK4', '2:LRIG3', '3:CARD11', '3:RAC1', '3:ETV1', '3:HNRNPA2B1', '3:HOXA9', '3:HOXA11', '3:HOXA13', '3:JAZF1', '3:EGFR', '3:CD79A',  '3:ZNF180',  '3:BCL3','4:CDK4','6:WIF1','6:HMGA2' )
+amp[['CRUK0002']] = c('1:ETNK1', '1:KRAS','1:PPFIBP1',  '2:TERT', '2:DDIT3', '2:CDK4', '2:LRIG3','2:WIF1','2:MDM2','6:HMGA2')
+amp[['CRUK0004']] = c('2:EGFR', '2:FUS', '2:TFEB', '3:CCND3', '3:HSP90AB1', '3:MLLT6', '3:LASP1', '3:ERBB2', '8:AKAP9', '8:CDK6')
+amp[['CRUK0005']] = c('2:BRE', '2:TERT', '2:IL7R', '2:LIFR','2:CDK4', '4:LSM14A')
+amp[['CRUK0006']] = c('1:TERT')
+amp[['CRUK0007']] = c('1:SGK223')
+amp[['CRUK0008']] = c('2:TCEA1', '2:PLAG1', '2:CHCHD7', '2:NCOA2', '2:HEY1', '2:CNBD1', '2:RUNX1T1', '2:COX6C', '2:RSPO2','2:EIF3E', '2:MYC', '2:NDRG1')
+amp[['CRUK0009']] = c('1:NFE2L2', '1:ELN', '1:HIP1', '1:AKAP9', '1:CDK6', '1:TRRAP', '1:MET', '1:SND1','1:SMO','1:CREB3L2','1:TRIM24','1:KIAA1549','1:BRAF', '2:RHOH',  '2:TERT')
+amp[['CRUK0010']] = c('1:TERT')
+amp[['CRUK0012']] = c('1:ARNT', '1:SETDB1','1:TPM3','1:AURKA','1:GNAS','1:SS18L1','3:MUC1')
+amp[['CRUK0013']] = c('3:KRAS', '3:PPFIBP1', '4:CARD11', '4:RAC1', '4:HNRNPA2B1','4:HOXA9','4:HOXA11','4:HOXA13','4:JAZF1','4:EGFR', '6:ETV1')
+amp[['CRUK0016']] = c('1:TERT', '1:IL7R', '1:LIFR', '1:CCDC6','1:KDM5A','1:ERC1','1:CIITA','1:RMI2','1:TNFRSF17')
+amp[['CRUK0017']] = c('1:MYC', '1:NDRG1', '1:DDIT3', '1:CDK4', '1:TPM4', '1:CCNE1', '1:CEP89', '1:CEBPA', '1:LSM14A', '2:TCEA1', '2:PLAG1', '2:CHCHD7', '2:NCOA2', '2:HEY1', '2:CNBD1', '2:RUNX1T1', '2:COX6C', '2:RSPO2', '2:EIF3E', '2:SS18L1', '3:CLTCL1', '3:SEPT5', '3:EWSR1','3:PDGFB' )
+amp[['CRUK0018']] = c('8:CARD11','8:RAC1') 
+amp[['CRUK0020']] = c('1:TFEB', '1:CCND3', '1:ETNK1', '1:KRAS','1:TAF15','4:JAK2','4:CD274', '4:PDCD1LG2') 
+amp[['CRUK0021']] = c('1:EBF1', '1:PWWP2A', '1:RANBP17','1:TLX3','1:NPM1','1:EGFR' ) 
+amp[['CRUK0022']] = c('1:ETV1', '1:HNRNPA2B1', '1:HOXA9', '1:HOXA11', '1:HOXA13', '1:JAZF1', '1:AKAP9', '1:CDK6', '1:TRRAP','1:EZH2','1:MNX1','1:RUNX1T1', '1:COX6C', '1:RSPO2', '1:EIF3E','1:NKX2−1','1:FOXA1','1:CCNE1','1:AKT2')
+amp[['CRUK0024']] = c('1:MECOM', '1:EGFR', '1:TCEA1', '1:PLAG1', '1:CHCHD7', '1:NCOA2', '1:HEY1','1:CNBD1','1:RUNX1T1','1:COX6C')
+amp[['CRUK0028']] = c('1:RAC1', '1:EGFR', '3:FOXL2')
+amp[['CRUK0029']] = c('1:MALAT1', '1:CCND1', '1:NUMA1', '1:NKX2−1', '1:FOXA1','6:AKAP9')
+amp[['CRUK0030']] = c('1:KRAS')
+amp[['CRUK0031']] = c('1:WHSC1L1', '1:FGFR1', '1:NCOA2', '1:HEY1', '1:ETNK1', '1:PPFIBP1', '1:LCP1','1:BCR')
+amp[['CRUK0032']] = c('1:NKX2−1', '1:FOXA1', '1:COL1A1', '1:HLF', '1:MSI2', '1:CLTC','1:CD79B','1:RNF213','4:CCND1','7:DDX5')
+amp[['CRUK0034']] = c('1:FOXA1')
+amp[['CRUK0035']] = c('1:ETV1', '1:HNRNPA2B1', '1:HOXA9', '1:HOXA11','1:HOXA13','1:JAZF1','1:ZNF180','1:BCL3','1:SS18L1')
+amp[['CRUK0036']] = c('1:BCL9', '1:ARNT', '1:SETDB1', '1:MLLT11', '1:TPM3', '1:MUC1', '1:RIT1', '1:LMNA','1:PRCC','1:NTRK1','1:FCRL4','1:FCGR2B','1:PBX1', '1:TERT','1:IL7R','1:LIFR','1:VTI1A','1:TCF7L2','1:ETNK1','1:KRAS','1:PPFIBP1','2:COX6C')
+amp[['CRUK0037']] = c('1:GNAS', '10:HOOK3')
+amp[['CRUK0039']] = c('1:KDM5A', '1:ERC1', '1:CCND2','1:ZNF384','1:ETV6','1:ATF7IP','1:ETNK1','1:KRAS','1:PPFIBP1')
+amp[['CRUK0041']] = c('1:TERT', '1:EGFR', '1:AKAP9', '1:HEY1', '1:RUNX1T1', '1:COX6C', '1:RSPO2','1:KDM5A','1:CCNE1')
+amp[['CRUK0043']] = c('1:NKX2−1', '1:FOXA1')
+amp[['CRUK0045']] = c('3:EML4')
+amp[['CRUK0046']] = c('1:RHOH')
+amp[['CRUK0047']] = c('1:TCEA1', '1:PLAG1', '1:CHCHD7', '1:HEY1', '1:COX6C', '1:RSPO2','1:EIF3E','1:MYC','1:NDRG1')
+amp[['CRUK0048']] = c('1:BCL9', '1:TPM3', '1:EML4', '1:EGFR', '1:MYC','1:NDRG1','1:KIF5B', '1:FGFR2')
+amp[['CRUK0049']] = c('1:EGFR', '1:KRAS', '1:PPFIBP1')
+amp[['CRUK0050']] = c('1:NCOA2', '1:HEY1', '1:MYC', '3:CCND1')
+amp[['CRUK0051']] = c('1:CARD11', '1:RAC1', '1:ETV1', '1:HNRNPA2B1','1:HOXA9','1:HOXA11','1:HOXA13','1:JAZF1', '1:EGFR')
+amp[['CRUK0054']] = c('1:ARNT', '1:SETDB1', '1:MLLT11', '1:TPR','1:MDM4','1:SLC45A3','1:IRF6')
+amp[['CRUK0057']] = c('1:BCL9', '1:ARNT', '1:SETDB1', '1:MLLT11','1:TERT','1:IL7R','1:LIFR','1:MYH11')
+amp[['CRUK0061']] = c('1:CBFA2T3')
+amp[['CRUK0062']] = c('2:RNF217−AS1', '2:IL21R', '3:KAT6A', '3:IKBKB', '3:HOOK3', '4:FOXL2', '4:WWTR1',  '4:GMPS',  '4:MLF1',  '4:MECOM',  '4:PIK3CA',  '4:SOX2', '4:ETV5',  '4:EIF4A2',  '4:BCL6',  '4:LPP', '4:TFRC', '4:CCND1', '8:BCR', '11:PAX5')
+amp[['CRUK0063']] = c('1:RET', '2:WWTR1', '2:GMPS', '2:MLF1', '2:MECOM', '2:PIK3CA', '2:SOX2', '2:ETV5','2:EIF4A2','2:BCL6','2:LPP','2:TFRC', '2:TERT','3:IL7R', '3:LMO2')
+amp[['CRUK0065']] = c('1:MECOM', '1:PIK3CA', '1:SOX2','1:ETV5','1:EIF4A2','1:BCL6','1:LPP','1:TFRC')
+amp[['CRUK0066']] = c('1:FIP1L1', '1:CHIC2', '1:PDGFRA', '1:KIT', '1:KDR', '1:TERT', '1:IL7R', '1:LIFR','1:MDM2','1:AKT2','1:NCOA6','1:DSN1','1:MAFB','1:TOP1','1:PLCG1', '1:SDC4', '1:NFATC2', '1:AURKA', '1:GNAS')
+amp[['CRUK0067']] = c('1:WWTR1', '1:GMPS', '1:MLF1', '1:MECOM', '1:PIK3CA','1:SOX2','1:ETV5','1:EIF4A2','1:BCL6','1:LPP','1:TFRC','1:TFEB','1:CCND3','1:HSP90AB1')
+amp[['CRUK0068']] = c('1:MECOM', '1:PIK3CA', '1:SOX2', '1:ETV5','1:EIF4A2','1:BCL6','1:LPP','1:TFRC','9:TERT')
+amp[['CRUK0069']] = c('1:CHIC2', '1:PDGFRA', '1:KIT', '1:KDR', '1:WHSC1L1', '1:FGFR1', '1:ERBB3', '1:NACA','1:NAB2','1:STAT6', '1:DDIT3','1:CDK4','1:CEP89','1:CEBPA','1:LSM14A','1:AKT2','2:IL7R','2:JAK3','3:ATP5B','4:FIP1L1', '4:NFATC2','4:AURKA','4:GNAS','4:SS18L1','11:LIFR')
+amp[['CRUK0070']] = c('1:COL5A2', '1:SF3B1', '1:SOX2', '1:ETV5','1:EIF4A2','1:BCL6','1:LPP', '2:AKT2', '3:NFE2L2')
+amp[['CRUK0071']] = c('1:OMA1', '1:JUN', '1:JAK1', '1:FOXL2', '1:WWTR1', '1:GMPS', '1:MLF1','1:MECOM','1:PIK3CA','1:SOX2','1:ETV5','1:EIF4A2','1:BCL6','1:LPP','1:TFRC')
+amp[['CRUK0072']] = c('1:MECOM', '1:PIK3CA', '1:SOX2', '1:EGFR','1:MYC','1:NDRG1','2:FCGR2B','2:C2orf44','2:NCOA1','2:BCL11A','2:REL','2:XPO1')
+amp[['CRUK0073']] = c('1:WHSC1L1', '1:FGFR1', '1:KAT6A', '1:IKBKB', '1:HOOK3', '1:TCEA1', '1:PLAG1', '1:CHCHD7','1:NCOA2','1:HEY1','1:CNBD1', '1:RUNX1T1','1:COX6C','1:RSPO2','1:EIF3E','1:MYC','1:NDRG1','1:KDM5A','1:ERC1')
+amp[['CRUK0074']] = c('1:MLF1', '1:MECOM', '1:PIK3CA', '1:SOX2', '1:ETV5', '1:EIF4A2', '1:BCL6', '1:LPP','1:TFRC','1:CCND1','1:NKX2−1','1:FOXA1','1:AKT2','1:CD79A','3:LSM14A')
+amp[['CRUK0075']] = c('1:WHSC1L1', '1:FGFR1', '1:CCNE1','1:CEP89','1:CEBPA','1:LSM14A','1:AKT2','1:CD79A','1:ZNF180','1:BCL3')
+amp[['CRUK0076']] = c('1:REL', '1:XPO1', '1:PIK3CA', '1:SOX2', '1:ETV5', '1:EIF4A2', '1:BCL6','1:LPP','1:TFRC','1:IL7R','1:LIFR','1:WHSC1L1','1:FGFR1')
+amp[['CRUK0077']] = c('1:TFEB','1:CCND3','1:HSP90AB1')
+amp[['CRUK0078']] = c('1:PIK3CA', '1:SOX2', '1:ETV5', '1:EIF4A2', '1:BCL6', '1:LPP','1:TFRC','1:WHSC1L1','1:FGFR1','1:KAT6A','1:KDM5A','1:ERC1','1:SS18L1')
+amp[['CRUK0079']] = c('1:WWTR1', '1:GMPS', '1:MLF1', '1:PIK3CA', '1:SOX2', '1:WHSC1L1','1:FGFR1','1:KAT6A','1:IKBKB','1:HOOK3', '1:CCNE1','1:CEP89','1:CEBPA','1:LSM14A','1:AKT2','1:CD79A','1:ZNF180','1:BCL3')
+amp[['CRUK0080']] = c('1:SRSF3', '1:EGFR', '1:CCND1', '1:NUMA1', '1:BIRC3', '3:CALR','3:LYL1')
+amp[['CRUK0082']] = c('1:TFG', '1:GATA2', '1:RPN1', '1:CNBP', '1:FOXL2', '1:WWTR1', '1:GMPS', '1:MLF1', '1:MECOM','1:PIK3CA', '1:SOX2','1:ETV5','1:EIF4A2','1:BCL6','1:LPP','1:TFRC','1:WHSC1L1','1:FGFR1','1:FSTL3')
+amp[['CRUK0083']] = c('1:WWTR1', '1:GMPS', '1:MLF1', '1:MECOM', '1:PIK3CA', '1:SOX2','1:ETV5','1:EIF4A2','1:BCL6','1:LPP', '1:TFRC','1:WHSC1L1','1:FGFR1','1:KAT6A','1:IKBKB','1:HOOK3','1:MYC','1:NDRG1','2:CCNB1IP1','2:NKX2−1', '2:FOXA1')
+amp[['CRUK0085']] = c('2:ARNT', '2:SETDB1', '2:MLLT11', '5:PLAG1', '5:CHCHD7')
+amp[['CRUK0086']] = c('1:CARD11', '1:RAC1')
+amp[['CRUK0088']] = c('1:ZNF521', '1:SS18', '1:SETBP1', '1:MALT1','1:BCL2','1:KDSR','2:CD79B', '2:CEBPA', '2:LSM14A')
+amp[['CRUK0094']] = c('1:TERT')
+amp[['CRUK0100']] = c('6:GOLGA5', '6:ZNF521', '6:SS18')
+```
+
+Similarly, we collected deletions annotated in the same figures.
+```{r}
+del = NULL
+
+del[['CRUK0016']] = c('1:CDKN2A', '1:ZMYM2')
+del[['CRUK0003']] = c('1:CDKN2A')
+del[['CRUK0021']] = c('1:CDKN2A')
+del[['CRUK0023']] = c('1:CDKN2A')
+del[['CRUK0063']] = c('2:PRF1')
+del[['CRUK0067']] = c('1:CDKN2A')
+del[['CRUK0085']] = c('7:CDKN2A', '8:SDHB')
+del[['CRUK0086']] = c('1:FAT1')
+del[['CRUK0098']] = c('1:PTEN')
+del[['CRUK0100']] = c('1:CDKN2A')
+```
+Then, we define some functions that will help us packing SNVs and CNA alltogether. A first function detects which CNAs are recurrent in the cohort
+```{r}
+recurrent.CNA = function(w) {
+  w = unlist(w)
+  w = sapply(w, strsplit, split =':')
+  w = lapply(w, function(q)q[2])
+  w = table(unlist(w))
+  return(w)
+}
+
+recurrent.amp = recurrent.CNA(amp)
+recurrent.del = recurrent.CNA(del)
+```
+
+And a second function transforms the above annotation in entries that have the same format of the ``data`` dataframe
+```{r}
+cn.To.Data = function(x, type)
+{
+  df = NULL
+
+  for(a in 1:length(x))
+  {
+    patient = names(x)[a]
+    entries = x[[a]]
+
+    tk = sapply(entries, strsplit, split =':')
+    groups = lapply(tk, function(q)q[1])
+    cn = lapply(tk, function(q)q[2])
+
+
+    for(e in 1:length(cn))
+    {
+      template = data[data$SampleID == patient & data$PyClonePhyloCluster == groups[[e]], , drop = FALSE]
+      template = template[1, , drop = FALSE]
+
+      new.entry = c(
+        MutationID = paste('Annotated CN:', paste(type, '(', cn[[e]], ')', sep = '')),
+        SampleID = patient,
+        Hugo_Symbol = cn[[e]],
+        PyClonePhyloCluster = groups[[e]],
+        DriverMut = TRUE,
+        PyClonePhyloClonal = template[1, 'PyClonePhyloClonal'],
+        PyClonePhyloCCF = template[1, 'PyClonePhyloCCF'])
+      names(new.entry) = colnames(data)
+
+      df = rbind(df, new.entry)
+    }
+  }
+
+  rownames(df) = NULL
+
+  return(data.frame(df))
+}
+data = rbind(data, cn.To.Data(amp, 'amp'))
+data = rbind(data, cn.To.Data(del, 'del'))
+```
+The overall data is now this (here we subset the new CNAs)
+```{r}
+head(data[startsWith(data$MutationID, 'Annotated CN'), ])
+```
+We convert the fields in the dataframe to the required R types
+```{r}
+data$DriverMut = as.logical(data$DriverMut)
+data$PyClonePhyloCluster = as.integer(data$PyClonePhyloCluster)
+
+str(data)
+```
+
+## Preliminaries: subsetting data
+
+In REVOLVER we really correlate those drivers that appear in at least a certain number of patients, here modeled through variable ``MIN.RECURRENCE``. We begin some simple filtering that we finalize in the next steps
+
+```{r}
+MIN.RECURRENCE = 2
+
+# Split the data by gene ID
+data.split = data[data$DriverMut, ]
+data.split = split(data.split, f = data.split$Hugo_Symbol)
+head(data.split)
+
+# Compute frequencies
+occurrencesCount = lapply(data.split, function(x) unique(x['SampleID']))
+recurrentDrivers = occurrencesCount[unlist(lapply(occurrencesCount, function(x) nrow(x) >= MIN.RECURRENCE))]
+
+variantIDs.recurrentDrivers = names(recurrentDrivers)
+driversToSkip = setdiff(names(occurrencesCount), variantIDs.recurrentDrivers)
+
+cat('Below recurrence threshold : ', MIN.RECURRENCE, ':', paste(driversToSkip, collapse = ', '))
+cat('Above recurrence threshold : ', MIN.RECURRENCE, ':', paste(variantIDs.recurrentDrivers, collapse = ', '))
+
+# We change the DRIVER annotation to FALSE for all entries in "driversToSkip"
+data[data$Hugo_Symbol %in% driversToSkip, 'DriverMut'] = FALSE
+
+# We refactor data to be compliant with the format supported by REVOLVER
+colnames(data) = c('Misc', 'patientID', 'variantID', 'cluster', 'is.driver', 'is.clonal', 'CCF')
+data$is.clonal = ifelse(data$is.clonal  == 'C', TRUE, FALSE)
+
+head(data)
+```
+
+## Preliminaries: checking the cohort 
+
+We can now build a REVOLVER cohort object. We can use function ``revolver:::CCF.parser`` to parse CCF values. Here we set the minimum size to consider a clone to be ``10``; clones with less than 10 SNVs/CNAs will be dropped. 
+```{r,message=FALSE}
+# Load REVOLVER and disable crayon's coloured output that renders badly in HTML,
+# as well as REVOLVER's progress bars...
+library(revolver)
+options(crayon.enabled = FALSE)
+options(revolver.progressBar = FALSE)
+
+TRACERx.COHORT = revolver_cohort(
+  dataset = data,
+  CCF.parser = revolver:::CCF.parser,
+  annotation = 'TRACERx cohort -- driver events in SNVs and CNAs merged',
+  options = list(
+    ONLY.DRIVER = FALSE,
+    MIN.CLUSTER.SIZE = 10)
+)
+```
+
+We perform some basic inspection via function ``revolver_check_cohort``, we do that to mainly detect [parallel evolution events](https://github.com/caravagn/revolver/wiki/1.-Pipeline-and-Guidelines) 
+```{r}
+revolver_check_cohort(TRACERx.COHORT)
+```
+
+We observe that there are some such events. However, some of them are due to the fact that we have added CNAs to SNVs with the same ``variantID``. In a situation where CNAs where matched to SNVs, this creates false events of parallel evolution. This is clear, for instance, in ``CRUK0004`` where ``EGFR`` harbours both an SNV and a CNA amplification: this is not a real parallel evoltion event.
+
+
+*Misc* | *patientID* | *variantID* | *cluster* | *is.driver* | *is.clonal* | *CCF*
+--- | --- | --- | --- | --- | --- | --- 
+CRUK0004:7:55241708:G | CRUK0004 | EGFR | 2 | TRUE |  TRUE | R1:0.99;R2:0.98;R3:0.99;R4:0.98
+Annotated CN: amp(EGFR) | CRUK0004 | EGFR | 2 | TRUE | TRUE | R1:0.99;R2:0.99;R3:0.99;R4:0.98
+
+We manually curated removal of these conflicting situations. We prioritized clonal events over subclonal, in case of real parallel evolution events, and in the cases of double annotations such as above, we just removed one of the two events. For these cases this does not really change the computation since we  have the same keyword ``EGFR`` to correlate the event.
+
+```{r}
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0001', 'MGA', 'CRUK0001:15:41961225:C', '4')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0001', 'CDK4', 'Annotated CN: amp(CDK4)', '4')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0003', 'CTNNB1', 'CRUK0003:3:41266125:C', '4')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0004', 'EGFR', 'Annotated CN: amp(EGFR)', '2')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0009', 'BRAF', 'Annotated CN: amp(BRAF)', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0020', 'MGA', 'CRUK0020:15:42042784:C', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0020', 'BAP1', 'CRUK0020:3:52443736:C', '3')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0021', 'EGFR', 'Annotated CN: amp(EGFR)', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0030', 'KRAS', 'Annotated CN: amp(KRAS)', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0034', 'ATM', 'CRUK0034:11:108202177:G', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0036', 'KRAS', 'Annotated CN: amp(KRAS)', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0039', 'KRAS', 'Annotated CN: amp(KRAS)', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0039', 'KRAS', 'CRUK0039:12:25398284:C', '2')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0048', 'TP53', 'CRUK0048:17:7578475:G', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0060', 'KMT2C', 'CRUK0060:7:151851456:C', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0063', 'PIK3CA', 'Annotated CN: amp(PIK3CA)', '2')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0063', 'CDKN2A', 'CRUK0063:9:21971020:A', '16')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0064', 'FAT1', 'CRUK0064:4:187549878:G', '3')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0065', 'NCOA6', 'CRUK0065:20:33328437:C', '15')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0065', 'PIK3CA', 'CRUK0065:3:178936091:G', '2')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0067', 'TP53', 'CRUK0067:17:7577100:T', '1')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0071', 'CMTR2', 'CRUK0071:16:71319565:C', '25')
+TRACERx.COHORT = revolver_removeDriver(TRACERx.COHORT, 'CRUK0099', 'TP53', 'CRUK0099:17:7578508:C', '1')
+```
+
+Once we re-run ``revolver_check_cohort`` these conflicts are vanished (the others remain).
+
+```{r}
+revolver_check_cohort(TRACERx.COHORT)
+```
+
+## Starting with some analysis
+
+To begin with, we reshape the cohort object to avoid spaces in any name that is not supposed to have that; see [REVOLVER Input format](https://github.com/caravagn/revolver/wiki/2.-Input-Format).
+
+```{r}
+TRACERx.COHORT$variantIDs.driver = gsub(TRACERx.COHORT$variantIDs.driver, pattern = '−', replacement = '_')
+TRACERx.COHORT$dataset$variantID = gsub(TRACERx.COHORT$dataset$variantID, pattern = '−', replacement = '_')
+```
+
+Then we load the list of selected drivers in Table S23 of the main manuscript.
+```{r}
+drivers.TableS23 = c("TP53", "KRAS", "EGFR", "PIK3CA", "TERT", "CDKN2A", "FAT1", "MGA", "SOX2", "NFE2L2", "COL5A2", "FGFR1", "KEAP1", "NF1", "MYC", "UBR5", "CCND1", "KMT2D", "NOTCH1", "NOTCH2", "PLXNB2", "STK11", "FANCM", "KMT2C", "NCOA6", "RASA1", "ARID1B", "ARID2", "CREBBP", "PTPRC", "ARHGAP35", "ATM", "MET", "PDGFRA", "PTEN", "PTPRB", "RB1", "RBM10", "APC", "ASXL1", "ATRX", "", "BRIP1", "COL2A1", "KDM5C", "PASK", "SMARCA4", "SPEN", "WRN", "AMER1", "BRAF", "CHEK2", "CMTR2", "CYLD", "DICER1", "DNM2", "DOT1L", "EP300", "FAS", "FBXW7", "GATA3", "NCOR1", "PHOX2B", "PRF1", "SGK223", "SMAD4", "WAS", "WT1", "BAP1", "CBLB", "CIC", "CTNNB1", "CUL3", "CUX1", "FLT4", "IKZF1", "LATS1", "MAP3K1", "NRAS", "POLE", "PRDM1", "RAD21", "RNF43", "SERPINB13", "U2AF1", "ARID1A", "BCOR", "FANCC", "MLH1", "SETD2", "TSC2")
+```
+
+And we match them against what we prepared  so far
+```{r}
+table = revolver:::clonal.subclonal.table(TRACERx.COHORT)
+print(table)
+
+table = table[rownames(table) %in% drivers.TableS23, ]
+table = table[table$Counts > 1, ]
+print(table)
+
+TRACERx.COHORT = revolver_subsetDrivers(TRACERx.COHORT, rownames(table))
+```
+
+> In the current release we make available the ``data.frame`` of the actual SNVs and CNAs used from the TRACERx cohort in a data object that you can load as ``data(TRACERx)``.
+
+We are so ready to run the full analysis via function ``revolver_analyzer``. The analysis carried out in the main manuscript is done with the parameters below. We do not run it here as the full analysis takes ~25 mins, the majority of them due to computing phylogenetic trees. 
+
+```{r, eval = FALSE}
+# Automatic analysis: not run here
+revolver_analyzer(
+  TRACERx.COHORT, 
+  type = 'CCF', 
+  cohort.name = 'TRACERx',
+  folder.output = 'Drivers_TabS23_in_>=2_patients',
+  do.plots = TRUE,
+  options.trees = list(
+    sspace.cutoff = 10000, 
+    n.sampling = 5000, 
+    store.max = 200, 
+    overwrite = FALSE),
+  options.fit = list(
+    initial.solution = NA, 
+    transitive.orderings = FALSE, 
+    restarts = 10),
+  options.clustering.withGL = list(
+    transitive.closure = FALSE, 
+    min.group.size = 3, 
+    hc.method = 'ward', 
+    cutoff.features_annotation = 1, 
+    split.method = 'cutreeHybrid'),
+  options.clustering.withoutGL = list(
+    transitive.closure = FALSE, 
+    min.group.size = 3, 
+    hc.method = 'ward', 
+    cutoff.features_annotation = 1, 
+    split.method = 'cutreeDynamic')
+)
+```
+
+An example phylogenetic tree is shown for patient ``'CRUK0002``; with the error-model derived from a modified version of [Clonevol](https://www.ncbi.nlm.nih.gov/pubmed/28950321) we compute 3 possible phylogenetic trees. 
+```{r}
+phylo = revolver_compute_phylogenies(TRACERx.COHORT, 'CRUK0002')
+print(phylo$phylogenies)
+```
+
+We can also plot the phylogenetic trees for this patient.
+```{r}
+plot(phylo, patients = 'CRUK0002')
+```
+
+**Output file:** ["CRUK0002.pdf"](./CRUK0002.pdf) 
+
+<!-- ## Analysis, fitting the models -->
+
+<!-- <!-- In the current release we make available an S3 object that contains the pre-computed phylogenies for the TRACERx cohort. --> -->
+<!-- <!-- ```{r} --> -->
+<!-- <!-- data(TRACERx.cohort) --> -->
+<!-- <!-- print(TRACERx.cohort) --> -->
+<!-- <!-- ``` --> -->
+
+<!-- We have computed offline the phylogenetic trees for this cohort with the above parameters -->
+
+Once the analysis has been carried out, one can assess confidence of the estimates with the jackknife; see the CRC vignette attached to REVOLVER for an example. We suggest running these analyses on a cluster machine to speed up the computation (on a 40-core machines jackknife analysis requires ~30 minutes exploiting 90% of the available cores in parallel).
+
+

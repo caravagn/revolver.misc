@@ -39,7 +39,7 @@ options(revolver.progressBar = FALSE)
 
 In this notebook we refer to "SNVs" to indicate mutations annotated in the original paper (even if some of them are in/dels), and we call "clones" the set of SNVs detected in the same samples of a patient.
 
-The format of input ``data`` is REVOLVER's standard data.frame, that we pre-prepared. Notice that we subset data from Cross W et al to contain just driver SNVs. This is not a general pre-requisite of REVOLVER, which can process all mutations annotated in a phylogenetic tree. 
+The format of input ``data`` is REVOLVER's standard data.frame, that we pre-prepared. Notice that we subset data originally released from Cross W et al to contain only driver SNVs. This is not a general pre-requisite of REVOLVER, which can process all mutations annotated in a phylogenetic tree. 
 
 ```{r, echo = TRUE, message=FALSE}
 # Load the SNVs that we prepared and that comes with REVOLVER's package
