@@ -1621,11 +1621,7 @@ In this case we feel that a good set of parameters is:
   - `split.method = 'cutreeHybrid'`, and the hybrid cutting strategy for
     determine the output clusters.
 
-The function plots the results in a nice heatmap format with annotated
-features, and save it to the default files `"REVOLVER-clustering.pdf"`,
-plus the consensus per group (file `"Consensus.pdf"`). In this case we
-want all features to be annotated, and thus we set their minimum cutoff
-(frequency) to 1.
+<!-- end list -->
 
 ``` r
 fit = revolver_cluster(fit, 
@@ -1680,7 +1676,9 @@ fit = revolver_cluster(fit,
     ## 18 adenoma_8            C3   
     ## 19 carcinoma_6          C3
 
-and we can plot the outputs to file as well.
+and we can plot the outputs in a nice heatmap format with annotated
+features. In this case we want all features to be annotated, and thus we
+set `cutoff.features_annotation` to 1.
 
 ``` r
 revolver_plt_rclusters(fit, 
@@ -1804,25 +1802,25 @@ fit =  revolver_jackknife(fit, resamples = 50, leave.out = 0.1)
     ## # A tibble: 19 x 19
     ##    adenoma_1 adenoma_2 adenoma_3 adenoma_4 adenoma_5 adenoma_6 adenoma_7
     ##        <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
-    ##  1         0         0         0         0        43         3        38
-    ##  2         0         0         8         8         0        16         0
-    ##  3         0         8         0        41         0        28         0
-    ##  4         0         8        41         0         0        32         0
-    ##  5        43         0         0         0         0         3        42
-    ##  6         3        16        28        32         3         0         3
-    ##  7        38         0         0         0        42         3         0
-    ##  8         2         8        40        43         2        35         2
-    ##  9        40         0         0         0        42         3        37
-    ## 10         0        23         0         0         0         0         0
-    ## 11        39         0         0         0        43         3        37
-    ## 12        42         0         0         0        44         3        39
-    ## 13        41         0         0         0        44         3        39
-    ## 14         0        22         0         0         0         0         0
-    ## 15         0         6        39        41         0        31         0
-    ## 16         0        33         9         9         0        17         0
-    ## 17         0        22         0         0         0         0         0
-    ## 18         0        18         0         0         0         0         0
-    ## 19         0        21         0         0         0         0         0
+    ##  1         0         0         0         0        40         0        38
+    ##  2         0         0         7         7         0        22         0
+    ##  3         0         7         0        40         0        27         0
+    ##  4         0         7        40         0         0        29         0
+    ##  5        40         0         0         0         0         0        38
+    ##  6         0        22        27        29         0         0         0
+    ##  7        38         0         0         0        38         0         0
+    ##  8         0         7        41        41         0        29         0
+    ##  9        41         0         0         0        41         0        41
+    ## 10         0        24         0         0         0         0         0
+    ## 11        40         0         0         0        40         0        41
+    ## 12        38         0         0         0        38         0        38
+    ## 13        40         0         0         0        39         0        39
+    ## 14         0        23         0         0         0         0         0
+    ## 15         0         7        40        41         0        27         0
+    ## 16         0        37         4         4         0        19         0
+    ## 17         0        24         0         0         0         0         0
+    ## 18         0        19         0         0         0         0         0
+    ## 19         0        23         0         0         0         0         0
     ## # ... with 12 more variables: adenoma_8 <dbl>, adenoma_9 <dbl>,
     ## #   carcinoma_1 <dbl>, carcinoma_10 <dbl>, carcinoma_2 <dbl>,
     ## #   carcinoma_3 <dbl>, carcinoma_5 <dbl>, carcinoma_6 <dbl>,
@@ -1832,8 +1830,8 @@ fit =  revolver_jackknife(fit, resamples = 50, leave.out = 0.1)
     ## ------------------
     ## Median per cluster
     ## ------------------
-    ##   C2   C1   C3 
-    ## 0.80 0.66 0.79 
+    ##  C2  C1  C3 
+    ## 0.8 0.7 0.8 
     ## 
     ## -------------------------------
     ## Edge frequency across resamples
@@ -1844,13 +1842,13 @@ fit =  revolver_jackknife(fit, resamples = 50, leave.out = 0.1)
     ##  1 GL     APC     1   
     ##  2 GL     FBXW7   1   
     ##  3 GL     TCF7L2  0.98
-    ##  4 APC    KMT2C   0.92
-    ##  5 TCF7L2 KMT2C   0.92
-    ##  6 KRAS   KMT2C   0.92
-    ##  7 APC    PIK3CA  0.88
-    ##  8 FBXW7  PIK3CA  0.88
-    ##  9 GL     BRAF    0.88
-    ## 10 KRAS   PIK3CA  0.88
+    ##  4 APC    TP53    0.92
+    ##  5 APC    KRAS    0.92
+    ##  6 FBXW7  PIK3CA  0.9 
+    ##  7 APC    KMT2C   0.9 
+    ##  8 TCF7L2 KMT2C   0.9 
+    ##  9 KRAS   KMT2C   0.9 
+    ## 10 APC    PIK3CA  0.9 
     ## # ... with 11 more rows
 
 Then, we can plot the jackknife statistics; we begin with the
@@ -1870,25 +1868,25 @@ revolver_plt_jackknife_coclust(fit, cutoff.annotate.numbers = .6)
     ## # A tibble: 19 x 19
     ##    adenoma_1 adenoma_2 adenoma_3 adenoma_4 adenoma_5 adenoma_6 adenoma_7
     ##        <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
-    ##  1      0         0         0         0         0.86      0.06      0.76
-    ##  2      0         0         0.16      0.16      0         0.32      0   
-    ##  3      0         0.16      0         0.82      0         0.56      0   
-    ##  4      0         0.16      0.82      0         0         0.64      0   
-    ##  5      0.86      0         0         0         0         0.06      0.84
-    ##  6      0.06      0.32      0.56      0.64      0.06      0         0.06
-    ##  7      0.76      0         0         0         0.84      0.06      0   
-    ##  8      0.04      0.16      0.8       0.86      0.04      0.7       0.04
-    ##  9      0.8       0         0         0         0.84      0.06      0.74
-    ## 10      0         0.46      0         0         0         0         0   
-    ## 11      0.78      0         0         0         0.86      0.06      0.74
-    ## 12      0.84      0         0         0         0.88      0.06      0.78
-    ## 13      0.82      0         0         0         0.88      0.06      0.78
-    ## 14      0         0.44      0         0         0         0         0   
-    ## 15      0         0.12      0.78      0.82      0         0.62      0   
-    ## 16      0         0.66      0.18      0.18      0         0.34      0   
-    ## 17      0         0.44      0         0         0         0         0   
-    ## 18      0         0.36      0         0         0         0         0   
-    ## 19      0         0.42      0         0         0         0         0   
+    ##  1      0         0         0        0          0.8      0          0.76
+    ##  2      0         0         0.14     0.14       0        0.44       0   
+    ##  3      0         0.14      0        0.8        0        0.54       0   
+    ##  4      0         0.14      0.8      0          0        0.580      0   
+    ##  5      0.8       0         0        0          0        0          0.76
+    ##  6      0         0.44      0.54     0.580      0        0          0   
+    ##  7      0.76      0         0        0          0.76     0          0   
+    ##  8      0         0.14      0.82     0.82       0        0.580      0   
+    ##  9      0.82      0         0        0          0.82     0          0.82
+    ## 10      0         0.48      0        0          0        0          0   
+    ## 11      0.8       0         0        0          0.8      0          0.82
+    ## 12      0.76      0         0        0          0.76     0          0.76
+    ## 13      0.8       0         0        0          0.78     0          0.78
+    ## 14      0         0.46      0        0          0        0          0   
+    ## 15      0         0.14      0.8      0.82       0        0.54       0   
+    ## 16      0         0.74      0.08     0.08       0        0.38       0   
+    ## 17      0         0.48      0        0          0        0          0   
+    ## 18      0         0.38      0        0          0        0          0   
+    ## 19      0         0.46      0        0          0        0          0   
     ## # ... with 12 more variables: adenoma_8 <dbl>, adenoma_9 <dbl>,
     ## #   carcinoma_1 <dbl>, carcinoma_10 <dbl>, carcinoma_2 <dbl>,
     ## #   carcinoma_3 <dbl>, carcinoma_5 <dbl>, carcinoma_6 <dbl>,
@@ -1913,9 +1911,9 @@ revolver_plt_jackknife_coclust_bplot(fit)
     ## # A tibble: 3 x 2
     ##   entry value
     ## * <chr> <dbl>
-    ## 1 C2     0.8 
-    ## 2 C1     0.66
-    ## 3 C3     0.79
+    ## 1 C2      0.8
+    ## 2 C1      0.7
+    ## 3 C3      0.8
 
 ![](vignette_CRC_Cross_et_al_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
@@ -1938,25 +1936,25 @@ revolver_plt_jackknife_edge_prb(fit)
     ## # A tibble: 19 x 19
     ##    adenoma_1 adenoma_2 adenoma_3 adenoma_4 adenoma_5 adenoma_6 adenoma_7
     ##        <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
-    ##  1      0         0         0         0         0.86      0.06      0.76
-    ##  2      0         0         0.16      0.16      0         0.32      0   
-    ##  3      0         0.16      0         0.82      0         0.56      0   
-    ##  4      0         0.16      0.82      0         0         0.64      0   
-    ##  5      0.86      0         0         0         0         0.06      0.84
-    ##  6      0.06      0.32      0.56      0.64      0.06      0         0.06
-    ##  7      0.76      0         0         0         0.84      0.06      0   
-    ##  8      0.04      0.16      0.8       0.86      0.04      0.7       0.04
-    ##  9      0.8       0         0         0         0.84      0.06      0.74
-    ## 10      0         0.46      0         0         0         0         0   
-    ## 11      0.78      0         0         0         0.86      0.06      0.74
-    ## 12      0.84      0         0         0         0.88      0.06      0.78
-    ## 13      0.82      0         0         0         0.88      0.06      0.78
-    ## 14      0         0.44      0         0         0         0         0   
-    ## 15      0         0.12      0.78      0.82      0         0.62      0   
-    ## 16      0         0.66      0.18      0.18      0         0.34      0   
-    ## 17      0         0.44      0         0         0         0         0   
-    ## 18      0         0.36      0         0         0         0         0   
-    ## 19      0         0.42      0         0         0         0         0   
+    ##  1      0         0         0        0          0.8      0          0.76
+    ##  2      0         0         0.14     0.14       0        0.44       0   
+    ##  3      0         0.14      0        0.8        0        0.54       0   
+    ##  4      0         0.14      0.8      0          0        0.580      0   
+    ##  5      0.8       0         0        0          0        0          0.76
+    ##  6      0         0.44      0.54     0.580      0        0          0   
+    ##  7      0.76      0         0        0          0.76     0          0   
+    ##  8      0         0.14      0.82     0.82       0        0.580      0   
+    ##  9      0.82      0         0        0          0.82     0          0.82
+    ## 10      0         0.48      0        0          0        0          0   
+    ## 11      0.8       0         0        0          0.8      0          0.82
+    ## 12      0.76      0         0        0          0.76     0          0.76
+    ## 13      0.8       0         0        0          0.78     0          0.78
+    ## 14      0         0.46      0        0          0        0          0   
+    ## 15      0         0.14      0.8      0.82       0        0.54       0   
+    ## 16      0         0.74      0.08     0.08       0        0.38       0   
+    ## 17      0         0.48      0        0          0        0          0   
+    ## 18      0         0.38      0        0          0        0          0   
+    ## 19      0         0.46      0        0          0        0          0   
     ## # ... with 12 more variables: adenoma_8 <dbl>, adenoma_9 <dbl>,
     ## #   carcinoma_1 <dbl>, carcinoma_10 <dbl>, carcinoma_2 <dbl>,
     ## #   carcinoma_3 <dbl>, carcinoma_5 <dbl>, carcinoma_6 <dbl>,
@@ -1982,11 +1980,11 @@ revolver_plt_jackknife_edge_counts(fit)
     ##    from  to    edge     count
     ##  * <chr> <chr> <fct>    <dbl>
     ##  1 GL    APC   GL~APC      17
-    ##  2 APC   KRAS  APC~KRAS     7
-    ##  3 APC   TP53  APC~TP53     7
+    ##  2 APC   TP53  APC~TP53     7
+    ##  3 APC   KRAS  APC~KRAS     5
     ##  4 GL    APC   GL~APC      17
-    ##  5 APC   TP53  APC~TP53     7
-    ##  6 APC   KRAS  APC~KRAS     6
+    ##  5 APC   KRAS  APC~KRAS     6
+    ##  6 APC   TP53  APC~TP53     6
     ##  7 GL    APC   GL~APC      17
     ##  8 APC   KRAS  APC~KRAS     7
     ##  9 APC   TP53  APC~TP53     6

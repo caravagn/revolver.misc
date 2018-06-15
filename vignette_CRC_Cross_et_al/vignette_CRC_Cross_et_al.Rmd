@@ -191,7 +191,7 @@ fit
 ```
 
 You can plot the fit that, by default, will output to PDF files your models. See the manual entry for the S3 class function ``?plot.rev_cohort_fit``. 
-```{r, eval= TRUE, message=FALSE}
+```{r, eval= TRUE, message=FALSE, fig.height=8, fig.width=8}
 plot(fit)
 ```
 
@@ -241,8 +241,6 @@ In this case we feel that a good set of parameters is:
 * ``hc.method = 'ward'``, the Ward method for dendogram computation,
 * ``split.method = 'cutreeHybrid'``, and the hybrid cutting strategy for determine the output clusters.
 
-The function plots the results in a nice heatmap format with annotated features, and save it to the default files ``"REVOLVER-clustering.pdf"``, plus the consensus per group (file ``"Consensus.pdf"``). In this case we want all features to be annotated, and thus we set their minimum cutoff (frequency) to 1.
-
 ```{r, eval= TRUE, message = FALSE, warning = FALSE}
 fit = revolver_cluster(fit, 
                         hc.method = 'ward',
@@ -250,7 +248,9 @@ fit = revolver_cluster(fit,
                         split.method  = 'cutreeHybrid')
 ```
 
-and we can plot the outputs to file as well.
+and we can plot the outputs in a nice heatmap format with annotated features. In this case we want all features to be annotated, and thus we set `cutoff.features_annotation` to 1.
+
+
 ```{r, eval= TRUE, message = FALSE, warning = FALSE, fig.height=8, fig.width=8}
 revolver_plt_rclusters(fit, 
                        cutoff.features_annotation = 1)
