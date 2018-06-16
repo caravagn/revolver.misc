@@ -1,5 +1,4 @@
-Enrichment and survival analysis from REVOLVER’s groups of breast
-cancers
+Enrichment and survival analysis for REVOLVER’s groups of breast cancers
 ================
 Giulio Caravagna
 June 10, 2018
@@ -13,6 +12,8 @@ REVOLVER is available as an R package at
 ``` r
 devtools::install_github("caravagn/revolver")
 ```
+
+# Test set
 
 We first prepared an RData object with all the survival information that
 we need to carry out this analysis. This contains two lists:
@@ -77,7 +78,7 @@ tibble::as.tibble(test.set$clinical_data)
     ## 10  86.4      36.6 DECEASED  9        Luminal B  
     ## # ... with 2,795 more rows
 
-# Classifications of the test set
+# Classification of the test set
 
 We first define the decision tree classifier that we discuss in the main
 REVOLVER paper.
