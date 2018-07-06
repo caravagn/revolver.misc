@@ -1331,7 +1331,8 @@ for (i in rownames(test)) {
       cd = rbind(cd1,cd2)
       
       fit = survfit(Surv(cd$time, cd$death)~cd$cluster)
-      
+      # Adjust color label
+      if(j>i){
       pl = ggsurvplot(fit,
                       data = cd,  
                       linetype=c(1,1),
@@ -1339,12 +1340,14 @@ for (i in rownames(test)) {
                       palette = colors[c(i,j)],
                       legend.labs = names(colors[c(i,j)]),
                       risk.table=F,
-                      censor=F,
+                      censor = T, 
+                      conf.int = TRUE,
                       ncensor.plot = F)
       print(pl)
+      }
     }
   }
 }
 ```
 
-![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-2.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-3.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-4.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-5.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-6.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-7.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-8.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-9.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-10.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-11.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-12.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-13.png)<!-- -->
+![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-2.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-3.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-4.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-5.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-6.png)<!-- -->![](vignette_survival_Breast_Yates_et_al_files/figure-gfm/unnamed-chunk-24-7.png)<!-- -->

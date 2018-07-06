@@ -471,7 +471,8 @@ for (i in rownames(test)) {
       cd = rbind(cd1,cd2)
       
       fit = survfit(Surv(cd$time, cd$death)~cd$cluster)
-      
+      # Adjust color label
+      if(j>i){
       pl = ggsurvplot(fit,
                       data = cd,  
                       linetype=c(1,1),
@@ -479,10 +480,13 @@ for (i in rownames(test)) {
                       palette = colors[c(i,j)],
                       legend.labs = names(colors[c(i,j)]),
                       risk.table=F,
-                      censor=F,
+                      censor = T, 
+                      conf.int = TRUE,
                       ncensor.plot = F)
       print(pl)
+      }
     }
   }
 }
+
 ```
